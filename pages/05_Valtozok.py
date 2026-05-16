@@ -16,37 +16,37 @@ with tab1:
             # ==========================================
             st.write(r"Legyen $\xi$ egy $(\Omega, \mathcal{F}, P)$ valószínűségi mezőben értelmezett valószínűségi változó. Ekkor $\forall k, l \in \mathbb{R}$ esetén a")
             st.latex(r"\{\xi \le k\}, \quad \{\xi = k\}, \quad \{\xi > k\} \quad \text{és} \quad \{l < \xi < k\}")
-            st.write("halmazok **események** (azaz garantáltan benne vannak az $\mathcal{F}$ $\sigma$-algebrában).")
+            st.write(r"halmazok **események** (azaz garantáltan benne vannak az $\mathcal{F}$ $\sigma$-algebrában).")
 
             st.markdown("**Részletes magyarázat (Miért fontos ez a tétel?):**")
-            st.write("Emlékezz vissza: a valószínűségi változó hivatalos definíciója *csak* azt kötötte ki, hogy a szigorúan kisebb ($\{\xi < k\}$) halmazok legyenek események. De a gyakorlatban ritkán kérdezzük csak ezt! Általában olyanokra vagyunk kíváncsiak, hogy 'Pistike pont 4-est dobott' ($=$), vagy 'Legalább 10 pontot ért el' ($\ge$).")
+            st.write(r"Emlékezz vissza: a valószínűségi változó hivatalos definíciója *csak* azt kötötte ki, hogy a szigorúan kisebb ($\{\xi < k\}$) halmazok legyenek események. De a gyakorlatban ritkán kérdezzük csak ezt! Általában olyanokra vagyunk kíváncsiak, hogy 'Pistike pont 4-est dobott' ($=$), vagy 'Legalább 10 pontot ért el' ($\ge$).")
             st.write("Ez a tétel azt bizonyítja be, hogy a definícióból kiindulva, pusztán az alap halmazműveletek (metszet, komplementer) segítségével az összes többi matematikai egyenlőtlenséget fel tudjuk építeni. És mivel ezek események lesznek, **kiszámolhatjuk a valószínűségüket**!")
 
             if st.checkbox("💡 Részletes Bizonyítás (5.1)", key="biz5_1"):
-                st.info("A bizonyítás során a $\sigma$-algebra tulajdonságait használjuk (komplementerképzés, végtelen metszet) úgy, mint a legókockákat.")
+                st.info(r"A bizonyítás során a $\sigma$-algebra tulajdonságait használjuk (komplementerképzés, végtelen metszet) úgy, mint a legókockákat.")
                 
-                st.markdown("**1. A kisebb-egyenlő $\{\xi \le k\}$ halmaz felépítése:**")
+                st.markdown(r"**1. A kisebb-egyenlő $\{\xi \le k\}$ halmaz felépítése:**")
                 st.write("A definícióból tudjuk, hogy minden pozitív $n$ egész számra a 'picit nagyobb' halmaz egy érvényes esemény:")
                 st.latex(r"\{\xi < k + \frac{1}{n}\} \in \mathcal{F}")
-                st.write("A $\sigma$-algebrában a megszámlálhatóan végtelen sok esemény metszete is esemény. Ha ezeket a halmazokat ($k+1$, $k+0.5$, $k+0.33$, stb.) mind elmetsszük egymással a végtelenig, a határértékük pontosan a 'kisebb vagy egyenlő' relációt adja ki:")
+                st.write(r"A $\sigma$-algebrában a megszámlálhatóan végtelen sok esemény metszete is esemény. Ha ezeket a halmazokat ($k+1$, $k+0.5$, $k+0.33$, stb.) mind elmetsszük egymással a végtelenig, a határértékük pontosan a 'kisebb vagy egyenlő' relációt adja ki:")
                 st.latex(r"\bigcap_{n=1}^\infty \{\xi < k + \frac{1}{n}\} = \{\xi \le k\} \implies \{\xi \le k\} \in \mathcal{F}")
                 
                 st.markdown("**2. A többi reláció felépítése (Logikai legózás):**")
                 
-                st.write("**Nagyobb vagy egyenlő ($\ge$):** A $\sigma_2$ axióma alapján a komplementer (ellentett) is esemény:")
+                st.write(r"**Nagyobb vagy egyenlő ($\ge$):** A $\sigma_2$ axióma alapján a komplementer (ellentett) is esemény:")
                 st.latex(r"\{\xi < k\} \in \mathcal{F} \implies \overline{\{\xi < k\}} = \{\xi \ge k\} \in \mathcal{F}")
                 
-                st.write("**Pontosan egyenlő ($=$):** Ha valami kisebb-egyenlő $k$-nál, ÉS nagyobb-egyenlő $k$-nál, az csakis $k$ lehet. Ez két esemény metszete:")
+                st.write(r"**Pontosan egyenlő ($=$):** Ha valami kisebb-egyenlő $k$-nál, ÉS nagyobb-egyenlő $k$-nál, az csakis $k$ lehet. Ez két esemény metszete:")
                 st.latex(r"\{\xi = k\} = \{\xi \le k\} \cap \{\xi \ge k\} \in \mathcal{F}")
                 
-                st.write("**Szigorúan nagyobb ($>$):** Egyszerűen a kisebb-egyenlő komplementere:")
+                st.write(r"**Szigorúan nagyobb ($>$):** Egyszerűen a kisebb-egyenlő komplementere:")
                 st.latex(r"\{\xi > k\} = \overline{\{\xi \le k\}} \in \mathcal{F}")
                 
-                st.write("**Két érték közé esik ($l < x < k$):** A szigorúan nagyobb és a szigorúan kisebb események metszete:")
+                st.write(r"**Két érték közé esik ($l < x < k$):** A szigorúan nagyobb és a szigorúan kisebb események metszete:")
                 st.latex(r"\{l < \xi < k\} = \{\xi > l\} \cap \{\xi < k\} \in \mathcal{F}")
 
             st.markdown("##### 🧮 Szimuláció 5.1: A Reláció-építő")
-            st.write("Legyen a kísérletünk egy D20-as (20 oldalú) kocka eldobása. A valószínűségi változónk a dobott érték: $\xi = x$. Játsszunk a relációkkal, és nézzük meg, hogyan adja ki a program az esemény halmazát!")
+            st.write(r"Legyen a kísérletünk egy D20-as (20 oldalú) kocka eldobása. A valószínűségi változónk a dobott érték: $\xi = x$. Játsszunk a relációkkal, és nézzük meg, hogyan adja ki a program az esemény halmazát!")
             
             col_k, col_rel = st.columns([1, 2])
             with col_k:
@@ -125,10 +125,10 @@ with tab2:
     # ==========================================
     st.markdown("### 🎲 Interaktív tesztelő: Készítsünk valószínűségi változót!")
     st.write("Dobjunk fel **két darab pénzérmét**. A lehetséges kimenetelek ( $\Omega$ ): `{FF, FÍ, ÍF, ÍÍ}`.")
-    st.write("Definiáljuk a $\xi$ (kszí) valószínűségi változót így: **$\xi = \text{Fejek száma a dobásban}$**.")
+    st.write(r"Definiáljuk a $\xi$ (kszí) valószínűségi változót így: **$\xi = \text{Fejek száma a dobásban}$**.")
 
     # A függvény leképezése
-    st.write("Ez a $\xi$ függvény a következőképpen rendeli a számokat a kimenetelekhez:")
+    st.write(r"Ez a $\xi$ függvény a következőképpen rendeli a számokat a kimenetelekhez:")
     st.latex(r"\xi(FF) = 2, \quad \xi(FÍ) = 1, \quad \xi(ÍF) = 1, \quad \xi(ÍÍ) = 0")
 
     st.write("Próbáljuk ki a jelöléseket a gyakorlatban! Állítsd be az $x$ értékét, és nézd meg, mely kimenetelek tartoznak az adott halmazba!")
@@ -137,7 +137,7 @@ with tab2:
 
     col1, col2 = st.columns(2)
     with col1:
-        st.success(f"**Esemény: $\\{{\\xi = {ertek}\\}}$**")
+        st.success(rf"**Esemény: $\\{{\xi = {ertek}\\}}$**")
         st.caption("Melyik dobásoknál lesz a fejek száma pontosan ennyi?")
         if ertek == 2:
             st.write("Kimenetelek: `{FF}`")
@@ -149,7 +149,7 @@ with tab2:
             st.write("Kimenetelek: `∅` (Lehetetlen esemény)")
             
     with col2:
-        st.warning(f"**Esemény: $\\{{\\xi < {ertek}\\}}$**")
+        st.warning(rf"**Esemény: $\\{{\xi < {ertek}\\}}$**")
         st.caption("Melyik dobásoknál lesz a fejek száma szigorúan kevesebb, mint ennyi?")
         halmaz = []
         if 0 < ertek: halmaz.append("ÍÍ")
@@ -163,4 +163,4 @@ with tab2:
         else:
             st.write("Kimenetelek: `∅` (Lehetetlen esemény)")
             
-    st.write("Látod? Bármilyen 'x'-et is állítasz be, a feltételnek megfelelő kimenetelek mindig egy érvényes eseményt (halmazt) alkotnak. A hivatalos definíció pontosan ezt követeli meg a $\sigma$-algebrában!")
+    st.write(r"Látod? Bármilyen 'x'-et is állítasz be, a feltételnek megfelelő kimenetelek mindig egy érvényes eseményt (halmazt) alkotnak. A hivatalos definíció pontosan ezt követeli meg a $\sigma$-algebrában!")
