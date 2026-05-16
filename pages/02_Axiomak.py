@@ -285,18 +285,54 @@ with tab2:
     # ==========================================
     # 1. VALÓSZÍNŰSÉGI MEZŐ ÉS AXIÓMÁK
     # ==========================================
-    st.markdown("### 1. Valószínűségi mező és a $\sigma$-additivitás")
-    st.write("Az $(\Omega, \mathcal{F}, P)$ hármast **valószínűségi mezőnek** nevezzük, amennyiben teljesülnek rá a Kolmogorov-axiómák.")
-    st.write("A harmadik axiómát (K3) más néven **$\sigma$-additivitásnak** hívjuk. Ez mondja ki, hogy az egymást páronként kizáró események uniójának valószínűsége megegyezik a valószínűségeik összegével.")
+    st.markdown("### 1. Kolmogorov valószínűségi axiómái és a valószínűségi mező")
+    st.write(r"Tekintsünk egy $\Omega$ nemüres halmazt és $\mathcal{F} \subseteq \wp(\Omega)$ $\sigma$-algebrát. Ekkor **valószínűségnek** nevezzük azt a $P : \mathcal{F} \rightarrow \mathbb{R}$ függvényt, amelyre fennállnak a következő állítások:")
+    
+    st.latex(r"(K1) \quad A \in \mathcal{F} \implies P(A) \ge 0")
+    st.latex(r"(K2) \quad P(\Omega) = 1")
+    st.write(r"(K3) Ha $A_1, A_2, \dots \in \mathcal{F}$ egymást páronként kizáró események, akkor:")
     st.latex(r"P\left(\bigcup_{i=1}^{\infty} A_i\right) = \sum_{i=1}^{\infty} P(A_i)")
-    st.info("💡 **Jelölési trükk:** A képlet bal oldalán a nagy unió ($\bigcup$) jel helyett sokszor egyszerűen a szumma ($\Sigma$) jelet is használhatjuk a matematikai levezetésekben!")
+    
+    st.info(r"💡 **Megjegyzés:** A nagy unió ($\bigcup$) jel helyett a szumma ($\Sigma$) is használható! $P\left(\sum_{i=1}^{\infty} A_i\right) = \sum_{i=1}^{\infty} P(A_i)$")
+    
+    st.write(r"Továbbá az $(\Omega, \mathcal{F}, P)$ hármast **valószínűségi mezőnek**, míg a (K3) tulajdonságot **$\sigma$-additivitásnak** hívjuk.")
+
+    # ==========================================
+    # INTERAKTÍV TESZTELŐ: AXIÓMÁK
+    # ==========================================
+    st.markdown("#### ⚖️ Interaktív tesztelő: Érvényes valószínűségi mező-e?")
+    st.write("Egy kísérletnek pontosan 3 lehetséges kimenetele van (A, B, C események, melyek teljes eseményrendszert alkotnak). Állítsd be a valószínűségüket, és nézzük meg, teljesítik-e a Kolmogorov-axiómákat!")
+    
+    colA, colB, colC = st.columns(3)
+    with colA:
+        p_a = st.number_input("P(A) esélye:", -0.5, 1.5, 0.3, 0.1)
+    with colB:
+        p_b = st.number_input("P(B) esélye:", -0.5, 1.5, 0.4, 0.1)
+    with colC:
+        p_c = st.number_input("P(C) esélye:", -0.5, 1.5, 0.3, 0.1)
+        
+    k1_pass = p_a >= 0 and p_b >= 0 and p_c >= 0
+    osszeg = p_a + p_b + p_c
+    k2_pass = abs(osszeg - 1.0) < 0.0001
+    
+    if not k1_pass:
+        st.error("❌ **(K1) Axióma megsértve:** A valószínűség nem lehet negatív! (Legalább egy esemény esélye < 0)")
+    elif not k2_pass:
+        st.error(f"❌ **(K2) Axióma megsértve:** A biztos esemény (A, B, C együtt) valószínűsége pontosan 1 kell hogy legyen! (A te összeged: {osszeg:.2f})")
+    else:
+        st.success("✅ **Sikeres axióma-teszt!** Nincs negatív érték (K1 pipa), és az összeg pontosan 1 (K2 pipa). Ez egy érvényes valószínűségi mező!")
+        st.write("A **(K3) $\sigma$-additivitás** alapján kiszámolható tetszőleges unió:")
+        st.latex(rf"P(A \cup B) = P(A) + P(B) = {p_a:.2f} + {p_b:.2f} = \mathbf{{{p_a+p_b:.2f}}}")
+
+    st.markdown("---")
 
     # ==========================================
     # 2. KLASSZIKUS VALÓSZÍNŰSÉGI MEZŐ
     # ==========================================
     st.markdown("### 2. Klasszikus valószínűségi mező")
-    st.write("Olyan valószínűségi mező, ahol a lehetséges kimenetelek száma véges, és **minden elemi esemény valószínűsége egyenlő**. Ebben a térben a valószínűséget a jól ismert képlettel számoljuk:")
-    st.latex(r"P(A) = \frac{|A|}{|\Omega|} = \frac{\text{Kedvező esetek száma}}{\text{Összes eset száma}}")
+    st.write(r"Legyen $\Omega$ véges nemüres halmaz, $\mathcal{F} = \wp(\Omega)$ és $P : \mathcal{F} \rightarrow \mathbb{R}$, ahol minden $A \in \mathcal{F}$-re:")
+    st.latex(r"P(A) = \frac{|A|}{|\Omega|}")
+    st.write(r"Ekkor $(\Omega, \mathcal{F}, P)$ **klasszikus valószínűségi mező**.")
 
     # ==========================================
     # 3. GEOMETRIAI VALÓSZÍNŰSÉGI MEZŐ
@@ -310,7 +346,7 @@ with tab2:
     st.markdown("---")
 
     # ==========================================
-    # INTERAKTÍV TESZTELŐ
+    # INTERAKTÍV TESZTELŐ: GEOMETRIA
     # ==========================================
     st.markdown("### 🎯 Interaktív tesztelő: Geometriai valószínűség")
     st.write("Képzeljük el, hogy Gabó dartsot játszik. A céltábla egy $20 \times 20$ cm-es négyzet. Gabó mindig eltalálja a négyzetet, méghozzá teljesen véletlenszerűen, minden pontot egyenlő eséllyel.")

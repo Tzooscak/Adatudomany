@@ -240,3 +240,51 @@ with tab2:
         
     if A.union(B) == omega and A.isdisjoint(B):
         st.error("**Teljes eseményrendszer:** A és B együttesen egy teljes eseményrendszert alkotnak a 10-oldalú kockára!")
+
+    # ==========================================
+    # 6. RELATÍV GYAKORISÁG
+    # ==========================================
+    st.markdown("### 6. Relatív gyakoriság")
+    st.write(r"Elvégzünk egy kísérletet $n$-szer és azt tapasztaljuk, hogy egy $A$ esemény $k$-szor fordul elő.")
+    st.write(r"Ekkor az $f_A$ függvényt az $A$ esemény relatív gyakoriságának nevezzük:")
+    st.latex(r"f_A : \mathbb{N}^+ \rightarrow [0, 1], \text{ ahol } f_A(n) := \frac{k}{n}")
+    
+    # ==========================================
+    # 7. SZIGMA-ALGEBRA
+    # ==========================================
+    st.markdown(r"### 7. $\sigma$-algebra (Szigma-algebra)")
+    st.write(r"Legyen $\Omega$ nemüres megszámlálható halmaz, $\mathcal{F} \subseteq \wp(\Omega)$. Ekkor $\mathcal{F}$-t **$\sigma$-algebrának**, elemeit eseményeknek nevezzük, ha teljesülnek a következők:")
+    
+    st.latex(r"(\sigma_1) \quad \Omega \in \mathcal{F}")
+    st.latex(r"(\sigma_2) \quad A \in \mathcal{F} \implies \overline{A} \in \mathcal{F}")
+    st.latex(r"(\sigma_3) \quad A_1, A_2, \dots \in \mathcal{F} \implies A_1 \cup A_2 \cup \dots \in \mathcal{F}")
+    
+    st.markdown("**Megjegyzések és Speciális esetek:**")
+    st.write(r"- A $(\sigma_3)$ tulajdonság véges esetre is igaz.")
+    st.write(r"- A teljes hatványhalmaz mindig $\sigma$-algebra: $\mathcal{F} = \wp(\Omega) \implies \mathcal{F} \text{ } \sigma\text{-algebra}$.")
+    st.info(r"**Triviális $\sigma$-algebra:** Ha $\mathcal{F} = \{\emptyset, \Omega\}$, akkor triviális $\sigma$-algebráról beszélünk.")
+
+    st.markdown("---")
+
+    # ==========================================
+    # INTERAKTÍV TESZTELŐ 3: RELATÍV GYAKORISÁG
+    # ==========================================
+    st.markdown("### 🎲 Interaktív tesztelő: Relatív gyakoriság a gyakorlatban")
+    st.write("Dobjunk egy érmével $n$-szer, és számoljuk meg, hányszor lesz 'Fej' ($k$)!")
+    
+    col3, col4 = st.columns(2)
+    with col3:
+        n_dobas = st.number_input("Összes kísérlet száma (n):", min_value=1, max_value=10000, value=100, step=10)
+    with col4:
+        k_fej = st.number_input("Kedvező kimenetelek - Fej (k):", min_value=0, max_value=n_dobas, value=48, step=1)
+        
+    rel_gyak = k_fej / n_dobas
+    
+    st.success("**A 'Fej' dobás relatív gyakorisága:**")
+    st.latex(rf"f_A({n_dobas}) = \frac{{{k_fej}}}{{{n_dobas}}} = \mathbf{{{rel_gyak:.4f}}}")
+    
+    st.write("Vizuálisan (0 és 1 között):")
+    st.progress(rel_gyak)
+    
+    if n_dobas >= 1000:
+        st.write("💡 *Észrevétel:* Mivel nagyon sokszor dobtál (nagy $n$), a relatív gyakoriság egyre jobban megközelíti az elméleti valószínűséget ($0.5$). Ezt hívják a relatív gyakoriság stabilitásának!")
