@@ -1,7 +1,87 @@
 import streamlit as st
+import time
 
+# Alapvető oldalbeállítások
 st.set_page_config(page_title="Adattudomány 2025", page_icon="🚀", layout="wide")
 
+
+if "xp" not in st.session_state:
+    st.session_state.xp = 120
+if "streak" not in st.session_state:
+    st.session_state.streak = 3 
+if "puska" not in st.session_state:
+    st.session_state.puska = []
+if "level" not in st.session_state:
+    st.session_state.level = 1
+
+st.session_state.level = (st.session_state.xp // 200) + 1
+xp_ebben_a_szintben = st.session_state.xp % 200
+
+if st.session_state.level == 1:
+    rang = "Kezdő Kockadobó 🎲"
+elif st.session_state.level == 2:
+    rang = "Bayes-Mester 🧠"
+elif st.session_state.level == 3:
+    rang = "Kvantum-Guru 🔮"
+else:
+    rang = "Valószínűség Istene ⚡"
+
+# ==============================================================================
+# 2. FEJEZET: OLDALSÁV (SIDEBAR) WIDGETEK - XP PROFIL, POMODORO, PUSKA
+# ==============================================================================
+
+# --- FEATURE 1: TANULÓI PROFIL & XP ---
+st.sidebar.markdown("## 🏆 Tanulói Profil")
+st.sidebar.markdown(f"**Rang:** `{rang}`")
+st.sidebar.markdown(f"**Szint:** `{st.session_state.level}`")
+
+# Szintlépési haladási sáv (Progress Bar)
+progress_szazalek = min(xp_ebben_a_szintben / 200.0, 1.0)
+st.sidebar.progress(progress_szazalek)
+st.sidebar.caption(f"✨ {xp_ebben_a_szintben} / 200 XP a következő szintig (Összesen: {st.session_state.xp} XP)")
+st.sidebar.markdown(f"🔥 **Napi sorozat:** `{st.session_state.streak} nap`")
+
+st.sidebar.markdown("---")
+
+# --- FEATURE 2: BEÉPÍTETT POMODORO IDŐZÍTŐ ---
+st.sidebar.markdown("### 🍅 Pomodoro Fókusz")
+pomo_tipus = st.sidebar.radio("Időzítő mód:", ["📚 Tanulás (25 perc)", "☕ Szünet (5 perc)"], label_visibility="collapsed")
+
+if st.sidebar.button("⏱️ Fókusz Blokk Indítása", use_container_width=True):
+    st.toast("Fókuszálás elindult! Ne válts oldalt, amíg a csík be nem telik!")
+    pomo_bar = st.sidebar.progress(0)
+    
+    # Szimulált visszaszámlálás látványos vizuális visszajelzéssel
+    for i in range(100):
+        time.sleep(0.04)  # Tanulási fókuszidő gyorsított szimulációja
+        pomo_bar.progress(i + 1)
+        
+    # Siker és XP jutalom!
+    st.session_state.xp += 50
+    st.sidebar.success("🎉 +50 XP! Sikeres fókusz blokk!")
+    st.balloons()
+    st.rerun()
+
+st.sidebar.markdown("---")
+
+# --- FEATURE 3: 📌 SAJÁT PUSKÁM (KÖNYVJELZŐ GYŰJTŐ) ---
+st.sidebar.markdown("### 📌 Saját Puskám")
+if not st.session_state.puska:
+    st.sidebar.caption("Üres a puskád. Kattints a tételeknél lévő 📌 gombokra a mentéshez!")
+else:
+    for mentett_tetel in st.session_state.puska:
+        st.sidebar.markdown(f"- {mentett_tetel}")
+        
+    if st.sidebar.button("🗑️ Puska kiürítése", use_container_width=True):
+        st.session_state.puska = []
+        st.toast("Puska sikeresen törölve!")
+        st.rerun()
+
+st.sidebar.markdown("---")
+
+# ==============================================================================
+# 3. FEJEZET: GYORSKERESŐ ADATBÁZIS ÉS NAVIGÁCIÓ (Eredeti kódod integrálása)
+# ==============================================================================
 kereso_adatbazis = {
     "Elemi és összetett események": "pages/01_Valoszinuseg.py",
     "Eseményalgebra (Unió, Metszet)": "pages/01_Valoszinuseg.py",
@@ -30,6 +110,7 @@ if kivalasztott_tema != "-- Válassz --":
 
 st.sidebar.markdown("---")
 
+# Alkalmazás struktúra oldalai
 pages = {
     "Áttekintés": [
         st.Page("pages/00_Kezdolap.py", title="Kezdőlap", icon="🏠"),
