@@ -174,8 +174,47 @@ with tab1:
         else:
             st.error(rf"❌ **Sikertelen építés!** A valószínűségek összege jelenleg {szumma*100:.0f}%. Az 5.4-es tétel csak akkor tudja felépíteni a mezőt, ha pontosan 100% az összeg!")
 
-    with st.expander("5.5 Eloszlásfüggvény tulajdonságai *"):
-        st.write("Kidolgozásra vár...")
+    with st.expander(r"5.5 Eloszlásfüggvény tulajdonságai (TÉTEL)"):
+        # ==========================================
+        # 5.5 TÉTEL: ELOSZLÁSFÜGGVÉNY TULAJDONSÁGAI
+        # ==========================================
+        st.write(r"Legyen $\xi$ egy $(\Omega, \mathcal{F}, P)$ valószínűségi mezőben értelmezett valószínűségi változó. Ekkor az $F_\xi$ eloszlásfüggvényre igazak a következők:")
+        
+        st.latex(r"(F1) \quad F_\xi \text{ monoton növő}")
+        st.latex(r"(F2) \quad \lim_{x \to +\infty} F_\xi(x) = 1")
+        st.latex(r"(F3) \quad \lim_{x \to -\infty} F_\xi(x) = 0")
+        st.latex(r"(F4) \quad F_\xi \text{ minden pontban balról folytonos}")
+
+        st.markdown(r"**Magyarázat az 5.5-höz:**")
+        st.write(r"Ezek a tulajdonságok logikusak, ha belegondolunk, hogy az eloszlásfüggvény a 'felhalmozott' valószínűséget mutatja. Nem csökkenhet (hiszen a valószínűség sosem negatív, így mindig csak adunk hozzá). A mínusz végtelenben még semmi sem történt (0%), a plusz végtelenben pedig már minden lehetséges eset megtörtént, így kimaxoljuk a 100%-ot (1). A balról folytonosság pedig egyszerűen a szigorúan kisebb ($<$) reláció matematikai következménye a definícióból.")
+
+        st.markdown(r"##### 📈 Szimuláció 5.5: CDF Tulajdonságok Vizsgálata")
+        st.write(r"Nézzük meg ezeket a tulajdonságokat egy valós, folytonos függvényen (például a híres Haranggörbe, azaz a normális eloszlás eloszlásfüggvényén)! Mozgasd az $x$ értékét a végtelenek felé!")
+
+        x_val_cdf = st.slider("Vizsgált x érték (a végtelenek szimulálásához):", -4.0, 4.0, 0.0, 0.2)
+
+        import math
+        # Standard normális eloszlás CDF közelítése (math.erf használatával)
+        cdf_ertek = 0.5 * (1 + math.erf(x_val_cdf / math.sqrt(2)))
+
+        st.latex(rf"F_\xi({x_val_cdf:.1f}) = \mathbf{{{cdf_ertek:.4f}}}")
+        st.progress(cdf_ertek)
+
+        if x_val_cdf >= 3.8:
+            st.success(r"Látod? Ahogy megyünk a $+\infty$ felé, a függvény értéke majdnem eléri a maximumot, az 1-et! Ez az **(F2)** tulajdonság.")
+        elif x_val_cdf <= -3.8:
+            st.info(r"Ahogy megyünk a $-\infty$ felé, a függvény értéke szinte teljesen 0! Ez az **(F3)** tulajdonság.")
+        else:
+            st.write(r"Ahogy tolod jobbra a csúszkát, az érték és a kék sáv is csak nőni tud, sosem csökken. Ez az **(F1)** monoton növő tulajdonság!")
+
+    with st.expander(r"5.6 $\xi$ létezése eloszlásfüggvényhez (TÉTEL)"):
+        # ==========================================
+        # 5.6 TÉTEL: LÉTEZÉS
+        # ==========================================
+        st.write(r"Az $F : \mathbb{R} \rightarrow \mathbb{R}$ függvényre teljesüljenek az (F1) - (F4) tulajdonságok. Ekkor létezik olyan $(\Omega, \mathcal{F}, P)$ valószínűségi mező és azon értelmezett $\xi$ valószínűségi változó, amelynek eloszlásfüggvénye $F$.")
+
+        st.markdown(r"**Magyarázat az 5.6-hoz:**")
+        st.write(r"Ez pontosan olyan 'Fordított Tervezés', mint az 5.4-es tétel volt a diszkrét eloszlásoknál! Ha te a semmiből felrajzolsz egy függvényt, ami monoton nő 0-tól 1-ig és balról folytonos, a matematika garantálja, hogy létezik hozzá egy valószínűségi változó a háttérben.")
     with st.expander("5.9 {a ≤ ξ < b} és a sűrűségfüggvény"):
         st.write("Kidolgozásra vár...")
     with st.expander("5.11 Sűrűségfüggvény integrálja"):
