@@ -281,6 +281,58 @@ with tab1:
             st.error("Hiba! A dolgozók termelésének összege (P(B1)+P(B2)+P(B3)) pontosan 1.0 kell legyen!")
 
 with tab2:
-    st.markdown("### Kulcsfogalmak [cite: 1407-1408]")
-    st.write("- Feltételes valószínűség definíciója")
-    st.write("- Tágabb értelemben vett teljes eseményrendszer")
+    st.header("🧠 Fogalmak definíciói")
+    st.write("A 3. tételhez (Feltételes valószínűség) tartozó hivatalos definíciók:")
+
+    # ==========================================
+    # 1. FELTÉTELES VALÓSZÍNŰSÉG
+    # ==========================================
+    st.markdown("### 1. Feltételes valószínűség")
+    st.write(r"Legyen $(\Omega, \mathcal{F}, P)$ valószínűségi mező, $A, B \in \mathcal{F}$ és $P(B) \neq 0$. Ekkor a következő hányadost az $A$ esemény $B$-re vonatkozó **feltételes valószínűségének** nevezzük:")
+    st.latex(r"P(A|B) := \frac{P(AB)}{P(B)}")
+    
+    st.info("💡 **Intuitív jelentés:** Azt mutatja meg, hogy mekkora eséllyel következik be az $A$ esemény, ha azt az extra információt kapjuk, hogy a $B$ esemény már biztosan bekövetkezett. Ilyenkor a $B$ esemény lesz az 'új' univerzumunk (a nevező).")
+
+    # ==========================================
+    # 2. TÁGABB ÉRTELEMBEN VETT TELJES ESEMÉNYRENDSZER
+    # ==========================================
+    st.markdown("### 2. Tágabb értelemben vett teljes eseményrendszer")
+    st.write(r"A $\mathcal{B} := B_1, B_2, \dots$ eseményrendszert, amelynek elemei egymást páronként kizáróak és:")
+    st.latex(r"P\left(\sum_{i=1}^{\infty} B_i\right) = 1")
+    st.write(r"**tágabb értelemben vett teljes eseményrendszernek** nevezzük.")
+    
+    st.warning("⚠️ **Mi a különbség a sima teljes eseményrendszertől?** A 'sima' definíciónál a halmazok uniójának hajszálpontosan ki kell adnia a teljes $\Omega$ teret. A 'tágabb' értelemnél elég, ha a valószínűségük összege 1 (tehát kimaradhatnak olyan 0 valószínűségű, lehetetlen események, amik fizikailag léteznek ugyan, de matematikai esélyük nulla).")
+
+    st.markdown("---")
+
+    # ==========================================
+    # INTERAKTÍV TESZTELŐ: FELTÉTELES VALÓSZÍNŰSÉG
+    # ==========================================
+    st.markdown("### 🎲 Interaktív tesztelő: Az 'Új Univerzum'")
+    st.write("Dobjunk egy szabályos 6-oldalú kockával. Számoljuk ki a feltételes valószínűséget a definíció alapján!")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        a_lista = st.multiselect("A esemény (Amit keresünk):", [1, 2, 3, 4, 5, 6], default=[6])
+    with col2:
+        b_lista = st.multiselect("B esemény (A feltétel, ami TUDJUK, hogy bekövetkezett):", [1, 2, 3, 4, 5, 6], default=[2, 4, 6])
+        
+    A = set(a_lista)
+    B = set(b_lista)
+    metszet = A.intersection(B)
+    
+    p_a = len(A) / 6
+    p_b = len(B) / 6
+    p_metszet = len(metszet) / 6
+    
+    if p_b > 0:
+        p_a_feltetel_b = p_metszet / p_b
+        
+        st.write(f"**Alap valószínűségek:** $P(A) = {len(A)}/6$, $P(B) = {len(B)}/6$, $P(AB) = {len(metszet)}/6$")
+        
+        st.success(f"**Feltételes valószínűség $P(A|B)$:**")
+        st.latex(rf"P(A|B) = \frac{{P(AB)}}{{P(B)}} = \frac{{{len(metszet)}/6}}{{{len(B)}/6}} = \frac{{{len(metszet)}}}{{{len(B)}}} = \mathbf{{{p_a_feltetel_b*100:.1f}\%}}")
+        
+        st.write("Vedd észre: Amint megtudtuk, hogy B bekövetkezett, az összes lehetséges eset (a képlet legvégi nevezője) 6-ról lecsökkent B elemeinek számára!")
+    else:
+        st.error("A feltétel (B) valószínűsége nem lehet 0! Válassz legalább egy elemet a B eseményhez.")
