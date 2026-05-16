@@ -152,3 +152,62 @@ with tab2:
         st.success(rf"**Igen!** Mivel az aktuális kimenetel ($\omega = {kimenetel}$) benne van az $A = {{2, 4, 6}}$ halmazban, az összetett esemény bekövetkezett.")
     else:
         st.error(rf"**Nem!** Mivel az aktuális kimenetel ($\omega = {kimenetel}$) nincs benne az $A = {{2, 4, 6}}$ halmazban, az összetett esemény nem következett be.")
+
+    # ==========================================
+    # 4. ESEMÉNYALGEBRA (MŰVELETEK ESEMÉNYEKKEL)
+    # ==========================================
+    st.markdown("### 4. Eseményalgebra")
+    st.write("Legyen $A$ és $B$ esemény, ekkor a következő műveleteket értelmezzük rajtuk:")
+
+    st.markdown("**1. Összeg (Unió):** $A + B$ (vagy $A \cup B$)")
+    st.write("Az az esemény, amely akkor következik be, ha **vagy A, vagy B, vagy mindkettő** bekövetkezik.")
+
+    st.markdown("**2. Szorzat (Metszet):** $A \cdot B$ (vagy $A \cap B$)")
+    st.write("Az az esemény, amely akkor következik be, ha **A is és B is** bekövetkezik.")
+
+    st.markdown("**3. Ellentett (Komplementer):** $\overline{A}$")
+    st.write("Az az esemény, amely akkor következik be, ha **A nem következik be**.")
+
+    st.markdown("**4. Különbség:** $A - B$ (vagy $A \setminus B$)")
+    st.write("Az az esemény, amely akkor következik be, ha **A bekövetkezik, de B nem**.")
+
+    st.markdown("**5. Szimmetrikus differencia:** $A \Delta B$")
+    st.write("Az az esemény, amely akkor következik be, ha A és B közül **pontosan egy** következik be.")
+
+    st.markdown("---")
+
+    # ==========================================
+    # INTERAKTÍV TESZTELŐ: ESEMÉNYALGEBRA
+    # ==========================================
+    st.markdown("### 🧮 Interaktív tesztelő: Halmazműveletek a gyakorlatban")
+    st.write("Legyen az alaphalmazunk ($\Omega$) egy 10-oldalú dobókocka (1-től 10-ig). Állítsd be az $A$ és $B$ események elemeit, és nézd meg, mit adnak ki a műveletek!")
+
+    omega = set(range(1, 11))
+
+    col1, col2 = st.columns(2)
+    with col1:
+        a_lista = st.multiselect("A esemény elemei:", list(omega), default=[1, 2, 3, 4, 5])
+    with col2:
+        b_lista = st.multiselect("B esemény elemei:", list(omega), default=[4, 5, 6, 7, 8])
+
+    A = set(a_lista)
+    B = set(b_lista)
+
+    st.write("#### Műveletek eredményei:")
+    
+    # Eredmények kiszámítása Python set műveletekkel
+    osszeg = A.union(B)
+    szorzat = A.intersection(B)
+    ellentett_a = omega.difference(A)
+    kulonbseg = A.difference(B)
+    szimm_diff = A.symmetric_difference(B)
+
+    # Segédfüggvény a szép kiíráshoz (ha üres a halmaz, kiírja, hogy ∅)
+    def format_set(s):
+        return str(sorted(list(s))) if s else "∅ (Lehetetlen esemény)"
+
+    st.success(f"**$A + B$ (Összeg):** `{format_set(osszeg)}`")
+    st.info(f"**$A \cdot B$ (Szorzat):** `{format_set(szorzat)}`")
+    st.warning(f"**$\overline{{A}}$ (A ellentettje):** `{format_set(ellentett_a)}`")
+    st.error(f"**$A - B$ (Különbség):** `{format_set(kulonbseg)}`")
+    st.markdown(f"> **$A \Delta B$ (Szimmetrikus differencia):** `{format_set(szimm_diff)}`")
