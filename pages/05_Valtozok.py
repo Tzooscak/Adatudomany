@@ -128,6 +128,7 @@ with tab1:
         else:
             st.error(rf"❌ **Hibás eloszlás!** A valószínűségek összege {szumma_p*100:.0f}%, ami megsérti az 5.3-as tételt. Kérlek javítsd ki úgy, hogy pontosan 1.0 legyen!")
             st.progress(min(szumma_p, 1.0))
+            
     with st.expander(r"5.4 $\xi$ egzisztenciája diszkrét eloszláshoz (TÉTEL)"):
         # ==========================================
         # 5.4 TÉTEL: EGZISZTENCIA
@@ -172,6 +173,7 @@ with tab1:
             st.latex(rf"P(\{{10, 50\}}) = {p_10:.2f} + {p_50:.2f} = \mathbf{{{p_10 + p_50:.2f}}}")
         else:
             st.error(rf"❌ **Sikertelen építés!** A valószínűségek összege jelenleg {szumma*100:.0f}%. Az 5.4-es tétel csak akkor tudja felépíteni a mezőt, ha pontosan 100% az összeg!")
+
     with st.expander("5.5 Eloszlásfüggvény tulajdonságai *"):
         st.write("Kidolgozásra vár...")
     with st.expander("5.9 {a ≤ ξ < b} és a sűrűségfüggvény"):
@@ -275,9 +277,9 @@ with tab2:
     st.write(r"függvényt a $\xi$ **eloszlásfüggvényének** (Cumulative Distribution Function, CDF) nevezzük.")
 
     st.info(r"💡 **Fontos megjegyzések a diáról:**"
-            "\n- A definíció miatt egy valószínűségi változónak **mindig** létezik eloszlásfüggvénye."
-            "\n- Diszkrét valószínűségi változónak is van eloszlásfüggvénye (ez egy 'lépcsős' függvény), ekkor $F_\xi$ értékkészlete megszámlálható."
-            "\n- ⚠️ **Beugratós kérdés:** A fordítottja nem igaz! Ha egy $F_\xi$ függvény értékkészlete megszámlálható, abból matematikai okok miatt még nem következik biztosan, hogy maga a $\xi$ változó diszkrét.")
+            r"<br>- A definíció miatt egy valószínűségi változónak **mindig** létezik eloszlásfüggvénye."
+            r"<br>- Diszkrét valószínűségi változónak is van eloszlásfüggvénye (ez egy 'lépcsős' függvény), ekkor $F_\xi$ értékkészlete megszámlálható."
+            r"<br>- ⚠️ **Beugratós kérdés:** A fordítottja nem igaz! Ha egy $F_\xi$ függvény értékkészlete megszámlálható, abból matematikai okok miatt még nem következik biztosan, hogy maga a $\xi$ változó diszkrét.")
 
     st.markdown("---")
 
