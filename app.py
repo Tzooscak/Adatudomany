@@ -14,11 +14,9 @@ if "puska" not in st.session_state:
 if "level" not in st.session_state:
     st.session_state.level = 1
 
-# Szint és Rang kiszámítása dinamikusan az XP alapján (Minden 200 XP egy szint)
 st.session_state.level = (st.session_state.xp // 200) + 1
 xp_ebben_a_szintben = st.session_state.xp % 200
 
-# 50+ Szintből álló rangrendszer (Dictionary alapú leképezés)
 rangok = {
     1: "Kezdő Kockadobó 🎲",
     2: "Érmefeldobó Tanonc 🪙",
@@ -93,24 +91,50 @@ st.sidebar.markdown(f"🔥 **Napi sorozat:** `{st.session_state.streak} nap`")
 
 st.sidebar.markdown("---")
 
-# --- FEATURE 2: BEÉPÍTETT POMODORO IDŐZÍTŐ ---
+# --- FEATURE 2: VALÓS IDEJŰ POMODORO IDŐZÍTŐ ---
 st.sidebar.markdown("### 🍅 Pomodoro Fókusz")
-pomo_tipus = st.sidebar.radio("Időzítő mód:", ["📚 Tanulás (25 perc)", "☕ Szünet (5 perc)"], label_visibility="collapsed")
 
-if st.sidebar.button("⏱️ Fókusz Blokk Indítása", use_container_width=True):
-    st.toast("Fókuszálás elindult! Ne válts oldalt, amíg a csík be nem telik!")
-    pomo_bar = st.sidebar.progress(0)
-    
-    # Szimulált visszaszámlálás látványos vizuális visszajelzéssel
-    for i in range(100):
-        time.sleep(0.04)  # Tanulási fókuszidő gyorsított szimulációja
-        pomo_bar.progress(i + 1)
+# Ha még nem indítottunk időzítőt, beállítjuk None-ra
+if "pomo_end" not in st.session_state:
+    st.session_state.pomo_end = None
+
+if st.session_state.pomo_end is None:
+    # Nincs futó időzítő -> Kérjük be a perceket és az indítást
+    pomo_perc = st.sidebar.slider("Hány perces fókusz?", 1, 60, 25)
+    if st.sidebar.button("⏱️ Fókusz Indítása", use_container_width=True):
+        # Elmentjük a jövőbeli lejárati időpontot (most + x perc másodpercben)
+        st.session_state.pomo_end = time.time() + (pomo_perc * 60)
+        st.toast(f"{pomo_perc} perces fókuszálás elindult! Kezdj el tanulni!")
+        st.rerun()
+else:
+    # Fut (vagy már lejárt) az időzítő
+    hatralevo_mp = int(st.session_state.pomo_end - time.time())
+
+    if hatralevo_mp > 0:
+        # Még tart az idő (kiszámoljuk a perceket és másodperceket)
+        perc = hatralevo_mp // 60
+        mp = hatralevo_mp % 60
+        st.sidebar.warning(f"⏳ **{perc:02d}:{mp:02d}** van hátra a fókuszból!")
+        st.sidebar.caption("Az időzítő a háttérben fut. Közben nyugodtan olvashatod a tételeket!")
         
-    # Siker és XP jutalom!
-    st.session_state.xp += 50
-    st.sidebar.success("🎉 +50 XP! Sikeres fókusz blokk!")
-    st.balloons()
-    st.rerun()
+        # Mivel a Streamlit nem frissül magától másodpercenként, teszünk egy frissítő gombot
+        if st.sidebar.button("🔄 Idő frissítése", use_container_width=True):
+            st.rerun()
+            
+        # Ha a tanuló feladja
+        if st.sidebar.button("🛑 Megszakítás", use_container_width=True):
+            st.session_state.pomo_end = None
+            st.sidebar.error("Fókusz megszakítva. Ezért most nem jár XP!")
+            st.rerun()
+    else:
+        # Lejárt az idő! Megjelenik a jutalom gomb.
+        st.sidebar.success("🎉 Lejárt az idő! Szép munka!")
+        if st.sidebar.button("🎁 XP Bezsebelése és Befejezés", use_container_width=True):
+            st.session_state.xp += 50
+            st.session_state.pomo_end = None
+            st.balloons()
+            st.toast("+50 XP a sikeres fókuszért!")
+            st.rerun()
 
 st.sidebar.markdown("---")
 
