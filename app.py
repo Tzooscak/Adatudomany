@@ -14,17 +14,67 @@ if "puska" not in st.session_state:
 if "level" not in st.session_state:
     st.session_state.level = 1
 
+# Szint és Rang kiszámítása dinamikusan az XP alapján (Minden 200 XP egy szint)
 st.session_state.level = (st.session_state.xp // 200) + 1
 xp_ebben_a_szintben = st.session_state.xp % 200
 
-if st.session_state.level == 1:
-    rang = "Kezdő Kockadobó 🎲"
-elif st.session_state.level == 2:
-    rang = "Bayes-Mester 🧠"
-elif st.session_state.level == 3:
-    rang = "Kvantum-Guru 🔮"
-else:
-    rang = "Valószínűség Istene ⚡"
+# 50+ Szintből álló rangrendszer (Dictionary alapú leképezés)
+rangok = {
+    1: "Kezdő Kockadobó 🎲",
+    2: "Érmefeldobó Tanonc 🪙",
+    3: "Relatív Gyakoriság Lovagja 🏇",
+    4: "Eseménytér Felfedezője 🔭",
+    5: "Szigma-Algebra Újonc 🔰",
+    6: "Halmazelméleti Padavan 🤺",
+    7: "Metszet-Mágus ⚔️",
+    8: "Unió-Uraság 🤝",
+    9: "Komplementer Kapitány 🏴‍☠️",
+    10: "Kolmogorov Kegyeltje 📜",
+    11: "Klasszikus Valószínűség Látnoka 👁️",
+    12: "Geometriai Valószínűség Geometre 📐",
+    13: "Feltételes Valószínűség Felfedező 🔗",
+    14: "Szorzástétel Szamuráj 🥷",
+    15: "Teljes Valószínűség Taktikusa 🗺️",
+    16: "Bayes-Tanonc 🕵️",
+    17: "Bayes-Mester 🧠",
+    18: "Függetlenség Harcosa 🦅",
+    19: "Diszkrét Változók Bajnoka 📊",
+    20: "Folytonos Változók Főpapja 🌊",
+    21: "Eloszlásfüggvény Építész 🏗️",
+    22: "Sűrűségfüggvény Suttogó 🌬️",
+    23: "Integrál Mágus 🪄",
+    24: "Várható Érték Vadász 🎯",
+    25: "Szórás-Szamuráj 🌪️",
+    26: "Kovariancia Kapitány ⚓",
+    27: "Korreláció Király/Királynő 👑",
+    28: "Binomiális Báró 🎩",
+    29: "Poisson Próféta 🕰️",
+    30: "Hipergeometriai Herceg 🏰",
+    31: "Geometriai Eloszlás Grófja 💎",
+    32: "Egyenletes Eloszlás Egyensúlyozója ⚖️",
+    33: "Normális Eloszlás Nindzsa 🥷",
+    34: "Haranggörbe Huszár 🔔",
+    35: "Exponenciális Emisszárius 🚀",
+    36: "Markov-Egyenlőtlenség Mágusa 🧙",
+    37: "Csebisev Lovagrend Vezére 🛡️",
+    38: "Nagy Számok Törvényének Tudósa 📜",
+    39: "Centrális Határeloszlás Császára 🏛️",
+    40: "Generátorfüggvény Géniusz 🧬",
+    41: "Karakterisztikus Függvény Khán ⛺",
+    42: "Sztochasztikus Szelídítő 🦁",
+    43: "Kvantum-Guru 🔮",
+    44: "Valószínűségi Változók Varázslója 🪄",
+    45: "Entrópia Ellenőr 🌌",
+    46: "Káoszelmélet Kutató 🌀",
+    47: "Valószínűségi Tér Tervezője 🌌",
+    48: "Sztochasztikus Folyamatok Fantomja 👻",
+    49: "Matematikai Statisztika Mestere 📈",
+    50: "Adattudomány Félistene 🧬",
+    51: "Sztochasztikus Szupernóva 💥"
+}
+
+# A rang kiválasztása: ha túllépi az 51-es szintet, alapértelmezetten a legmagasabbat kapja
+rang = rangok.get(st.session_state.level, "Valószínűség Istene ⚡")
 
 # ==============================================================================
 # 2. FEJEZET: OLDALSÁV (SIDEBAR) WIDGETEK - XP PROFIL, POMODORO, PUSKA
