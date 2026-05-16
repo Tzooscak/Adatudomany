@@ -84,8 +84,94 @@ with tab1:
         st.latex(r"\{\xi < \eta\} \text{ halmaz esemény.}")
         st.write(r"**Magyarázat:** Ez a tétel azt mondja ki, hogy nemcsak konstans számokkal (pl. $\xi < 5$) tudunk eseményeket létrehozni, hanem két valószínűségi változót is összehasonlíthatunk egymással (pl. 'Gabó dobása kisebb, mint Ricsi dobása', és ez is érvényes esemény lesz).")
 
-    with st.expander("5.3 Diszkrét eloszlás összege"):
-        st.write("Kidolgozásra vár...")
+    with st.expander(r"5.3 Diszkrét eloszlás összege (TÉTEL)"):
+        # ==========================================
+        # 5.3 TÉTEL: DISZKRÉT ELOSZLÁS ÖSSZEGE
+        # ==========================================
+        st.write(r"Ha $\xi$ egy $(\Omega, \mathcal{F}, P)$ valószínűségi mezőben értelmezett diszkrét valószínűségi változó $\langle p_x \rangle$ eloszlással, akkor:")
+        st.latex(r"\sum_{x \in \text{rng}(\xi)} p_x = 1")
+        
+        st.markdown(r"**Részletes magyarázat:**")
+        st.write(r"Ez a tétel azt mondja ki, hogy ha egy diszkrét valószínűségi változó (pl. egy dobókocka értéke) felvesz bizonyos értékeket (ez az értékkészlete, $\text{rng}(\xi)$), akkor ezekhez az értékekhez tartozó valószínűségek ($p_x$) összege mindig hajszálpontosan 1 (azaz 100%). Hiszen valaminek mindenképpen történnie kell a kísérlet során!")
+
+        if st.checkbox(r"💡 Részletes Bizonyítás (5.3)", key="biz5_3"):
+            st.info(r"A bizonyítás logikája: A lehetséges kimenetelek (értékek) egy teljes eseményrendszert alkotnak, aminek az összege a biztos esemény.")
+            
+            st.write(r"1. Jelölje $A_x$ azt az eseményt, hogy a változó éppen az $x$ értéket veszi fel:")
+            st.latex(r"A_x := \{\xi = x\}, \quad x \in \text{rng}(\xi)")
+            
+            st.write(r"2. Mivel a $\xi$ függvény egy adott $\omega$ kimenetelhez csakis egyetlen számot rendelhet hozzá, ezek az $A_x$ halmazok páronként kizárják egymást. Valamelyik viszont biztosan bekövetkezik, tehát **teljes eseményrendszert alkotnak**!")
+            
+            st.write(r"3. Írjuk fel a valószínűségek összegét (a $\sigma$-additivitás és a teljes eseményrendszer miatt):")
+            st.latex(r"\sum_{x \in \text{rng}(\xi)} p_x = \sum_{x \in \text{rng}(\xi)} P(A_x) = P\left( \sum_{x \in \text{rng}(\xi)} A_x \right) = P(\Omega) = 1")
+            st.success(r"Mivel a biztos esemény ($P(\Omega)$) valószínűsége 1, a tétel bizonyítást nyert.")
+
+        st.markdown(r"##### ⚖️ Szimuláció 5.3: A Cinkelt Kocka")
+        st.write(r"Készítsünk egy cinkelt 3-oldalú dobókockát! Állítsd be az egyes oldalak esélyét ($p_1, p_2, p_3$). A matematika törvényei szerint az összegüknek szigorúan 1.0-nak kell lennie.")
+        
+        col_p1, col_p2, col_p3 = st.columns(3)
+        with col_p1:
+            p1 = st.number_input("P(ξ = 1)", min_value=0.0, max_value=1.0, value=0.3, step=0.1)
+        with col_p2:
+            p2 = st.number_input("P(ξ = 2)", min_value=0.0, max_value=1.0, value=0.5, step=0.1)
+        with col_p3:
+            p3 = st.number_input("P(ξ = 3)", min_value=0.0, max_value=1.0, value=0.2, step=0.1)
+            
+        szumma_p = p1 + p2 + p3
+        
+        st.write(r"**Az eloszlás összege:**")
+        st.latex(rf"\sum p_x = {p1:.2f} + {p2:.2f} + {p3:.2f} = \mathbf{{{szumma_p:.2f}}}")
+        
+        if abs(szumma_p - 1.0) < 0.001:
+            st.success(r"✅ **Helyes eloszlás!** Az összeg pontosan 1, ez egy érvényes diszkrét valószínűségi változó.")
+            st.progress(1.0)
+        else:
+            st.error(rf"❌ **Hibás eloszlás!** A valószínűségek összege {szumma_p*100:.0f}%, ami megsérti az 5.3-as tételt. Kérlek javítsd ki úgy, hogy pontosan 1.0 legyen!")
+            st.progress(min(szumma_p, 1.0))
+    with st.expander(r"5.4 $\xi$ egzisztenciája diszkrét eloszláshoz (TÉTEL)"):
+        # ==========================================
+        # 5.4 TÉTEL: EGZISZTENCIA
+        # ==========================================
+        st.write(r"Legyen $X \subset \mathbb{R}$ nemüres megszámlálható halmaz, $\langle p_x \rangle : X \rightarrow [0, 1]$ és:")
+        st.latex(r"\sum_{x \in X} p_x = 1")
+        st.write(r"Ekkor létezik olyan $(\Omega, \mathcal{F}, P)$ valószínűségi mező és azon értelmezett $\xi$ valószínűségi változó, amelyre $\text{rng}(\xi) = X$ és eloszlása $\langle p_x \rangle$.")
+
+        st.markdown(r"**Részletes magyarázat (A 'Fordított Tervezés' tétele):**")
+        st.write(r"Az 5.3-as tétel azt mondta, hogy ha van egy létező változónk, annak az eloszlása (a kimenetelek esélyei) kiadja az 1-et. Ez az 5.4-es tétel pontosan a fordítottja! Azt mondja ki, hogy ha valaki letesz az asztalra egy kupac számot és hozzájuk tartozó valószínűségeket úgy, hogy azok összege pontosan 1, akkor garantáltan fel tudunk építeni köré egy elméleti, de szabályos matematikai világot.")
+
+        if st.checkbox(r"💡 Részletes Bizonyítás (5.4)", key="biz5_4"):
+            st.info(r"A bizonyítás konstruktív jellegű: szó szerint legyártjuk a szükséges halmazokat és függvényeket a tétel állításához.")
+
+            st.write(r"**1. A valószínűségi mező felépítése:** Legyen maga az $X$ halmaz a teljes eseményterünk, a $\sigma$-algebra pedig ennek minden lehetséges részhalmaza (hatványhalmaz):")
+            st.latex(r"\Omega := X \quad \text{és} \quad \mathcal{F} = \wp(\Omega)")
+
+            st.write(r"**2. A valószínűség ($P$) definiálása:** Bármely $A \in \mathcal{F}$ esemény valószínűsége legyen egyszerűen a benne lévő $x$ értékekhez tartozó $p_x$ valószínűségek összege:")
+            st.latex(r"P : \mathcal{F} \rightarrow \mathbb{R}, \quad P(A) := \sum_{x \in A} p_x")
+
+            st.write(r"**3. A valószínűségi változó ($\xi$) definiálása:** Végül ezen a kész mezőn értelmezzünk egy olyan $\xi : \Omega \rightarrow \mathbb{R}$ függvényt, ami minden elemet egyszerűen önmagába visz át (identitás):")
+            st.latex(r"\xi_x = x")
+            st.success(r"Ezzel készen is vagyunk! Sikerült egy olyan $(\Omega, \mathcal{F}, P)$ rendszert kreálnunk, ami pontosan a megadott $\langle p_x \rangle$ eloszlást követi.")
+
+        st.markdown(r"##### 🏗️ Szimuláció 5.4: A Valószínűség-Építő")
+        st.write(r"Kitalálsz egy saját számítógépes játékot, ahol a ládákból 10, 50, vagy 100 arany eshet. Ha a tervezett esélyek kiadják az 1-et (100%), a gép legenerálja neked a mögöttes valószínűségi mezőt!")
+
+        col_p1, col_p2, col_p3 = st.columns(3)
+        with col_p1:
+            p_10 = st.number_input("P(10 arany)", min_value=0.0, max_value=1.0, value=0.6, step=0.05)
+        with col_p2:
+            p_50 = st.number_input("P(50 arany)", min_value=0.0, max_value=1.0, value=0.3, step=0.05)
+        with col_p3:
+            p_100 = st.number_input("P(100 arany)", min_value=0.0, max_value=1.0, value=0.1, step=0.05)
+            
+        szumma = p_10 + p_50 + p_100
+        
+        if abs(szumma - 1.0) < 0.001:
+            st.success(r"✅ **Sikeres építés!** A valószínűségek összege 1. A bizonyítás alapján a következő mezőt generáltuk le:")
+            st.latex(r"\Omega = \{10, 50, 100\}")
+            st.latex(r"\mathcal{F} = \{\emptyset, \{10\}, \{50\}, \{100\}, \{10, 50\}, \{10, 100\}, \{50, 100\}, \Omega\}")
+            st.latex(rf"P(\{{10, 50\}}) = {p_10:.2f} + {p_50:.2f} = \mathbf{{{p_10 + p_50:.2f}}}")
+        else:
+            st.error(rf"❌ **Sikertelen építés!** A valószínűségek összege jelenleg {szumma*100:.0f}%. Az 5.4-es tétel csak akkor tudja felépíteni a mezőt, ha pontosan 100% az összeg!")
     with st.expander("5.5 Eloszlásfüggvény tulajdonságai *"):
         st.write("Kidolgozásra vár...")
     with st.expander("5.9 {a ≤ ξ < b} és a sűrűségfüggvény"):
@@ -179,3 +265,48 @@ with tab2:
             st.write(f"Kimenetelek: `{{{', '.join(halmaz)}}}`")
         else:
             st.write("Kimenetelek: `∅` (Lehetetlen esemény)")
+
+    # ==========================================
+    # 3. ELOSZLÁSFÜGGVÉNY (CDF)
+    # ==========================================
+    st.markdown("### 3. Eloszlásfüggvény (CDF)")
+    st.write(r"Legyen $\xi$ egy $(\Omega, \mathcal{F}, P)$ valószínűségi mezőben értelmezett valószínűségi változó. Ekkor az")
+    st.latex(r"F_\xi : \mathbb{R} \rightarrow \mathbb{R}, \quad F_\xi(x) := P(\xi < x)")
+    st.write(r"függvényt a $\xi$ **eloszlásfüggvényének** (Cumulative Distribution Function, CDF) nevezzük.")
+
+    st.info(r"💡 **Fontos megjegyzések a diáról:**"
+            "\n- A definíció miatt egy valószínűségi változónak **mindig** létezik eloszlásfüggvénye."
+            "\n- Diszkrét valószínűségi változónak is van eloszlásfüggvénye (ez egy 'lépcsős' függvény), ekkor $F_\xi$ értékkészlete megszámlálható."
+            "\n- ⚠️ **Beugratós kérdés:** A fordítottja nem igaz! Ha egy $F_\xi$ függvény értékkészlete megszámlálható, abból matematikai okok miatt még nem következik biztosan, hogy maga a $\xi$ változó diszkrét.")
+
+    st.markdown("---")
+
+    # ==========================================
+    # INTERAKTÍV TESZTELŐ: ELOSZLÁSFÜGGVÉNY
+    # ==========================================
+    st.markdown("### 📈 Interaktív tesztelő: A dobókocka eloszlásfüggvénye")
+    st.write(r"Az eloszlásfüggvény a **szigorúan kisebb** valószínűségeket 'gyűjti össze' (halmozza). Nézzük meg egy hagyományos 6-oldalú dobókocka eloszlásfüggvényét! A képlet: $F(x) = P(\xi < x)$.")
+
+    x_val = st.slider("Vizsgált 'x' érték (lehet tizedestört is!):", 0.0, 7.0, 3.5, 0.5)
+
+    import math
+    
+    # Kiszámoljuk a P(xi < x) értéket
+    if x_val <= 1.0:
+        cdf_val = 0.0
+        magyarazat = "Mivel a kockával nem dobhatunk 1-nél kisebbet, a valószínűség garantáltan 0."
+    elif x_val > 6.0:
+        cdf_val = 1.0
+        magyarazat = "A kockával biztosan 6-osat vagy annál kisebbet dobunk (ami szigorúan kisebb, mint a megadott érték). Ez a biztos esemény, valószínűsége 100%."
+    else:
+        # Kiszámoljuk, hány olyan egész szám (kockaoldal) van, ami szigorúan kisebb az x_val-nál
+        kedvezo = math.ceil(x_val) - 1
+        cdf_val = kedvezo / 6.0
+        magyarazat = rf"Pontosan {kedvezo} db olyan szám van a kockán, ami szigorúan kisebb, mint {x_val:.1f} (a lehetséges 6-ból)."
+
+    st.success(r"**Az eloszlásfüggvény értéke a megadott pontban:**")
+    st.latex(rf"F_\xi({x_val:.1f}) = P(\xi < {x_val:.1f}) = \frac{{{int(cdf_val * 6)}}}{{6}} \approx \mathbf{{{cdf_val:.3f}}}")
+    st.write(f"**Magyarázat:** {magyarazat}")
+    
+    st.write("**A 'halmozott' (kumulatív) valószínűség:**")
+    st.progress(cdf_val)
