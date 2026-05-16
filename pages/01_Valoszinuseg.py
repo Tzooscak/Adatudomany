@@ -131,12 +131,12 @@ with tab2:
     st.markdown("---")
     
     # ==========================================
-    # INTERAKTÍV TESZTELŐ
+    # INTERAKTÍV TESZTELŐ 1
     # ==========================================
     st.markdown("### 🧩 Interaktív fogalom-tesztelő")
     st.write(r"Játsszunk egy dobókockával! Az eseménytér: $\Omega = \{1, 2, 3, 4, 5, 6\}$")
     
-    kimenetel = st.slider(r"Állítsd be, mi lett a dobás eredménye ($\omega$)!)", 1, 6, 3)
+    kimenetel = st.slider(r"Állítsd be, mi lett a dobás eredménye ($\omega$)!", 1, 6, 3)
     st.write(rf"A kísérlet konkrét kimenetele: **$\omega = {kimenetel}$**")
     
     st.markdown("#### 1. Elemi esemény vizsgálata")
@@ -154,9 +154,9 @@ with tab2:
         st.error(rf"**Nem!** Mivel az aktuális kimenetel ($\omega = {kimenetel}$) nincs benne az $A = {{2, 4, 6}}$ halmazban, az összetett esemény nem következett be.")
 
     # ==========================================
-    # 4. ESEMÉNYALGEBRA (MŰVELETEK ESEMÉNYEKKEL)
+    # 4. ESEMÉNYALGEBRA (MŰVELETEK)
     # ==========================================
-    st.markdown("### 4. Eseményalgebra")
+    st.markdown("### 4. Eseményalgebra (Műveletek)")
     st.write("Legyen $A$ és $B$ esemény, ekkor a következő műveleteket értelmezzük rajtuk:")
 
     st.markdown("**1. Összeg (Unió):** $A + B$ (vagy $A \cup B$)")
@@ -174,13 +174,33 @@ with tab2:
     st.markdown("**5. Szimmetrikus differencia:** $A \Delta B$")
     st.write("Az az esemény, amely akkor következik be, ha A és B közül **pontosan egy** következik be.")
 
+    # ==========================================
+    # 5. ESEMÉNYEK RELÁCIÓI ÉS RENDSZEREI
+    # ==========================================
+    st.markdown("### 5. Események relációi és rendszerei")
+
+    st.markdown("**1. Egyenlőség ($A = B$):**")
+    st.write("Két esemény egyenlő, ha a kísérlet bármely lehetséges kimenetele esetén vagy mindkét esemény bekövetkezik, vagy egyik sem.")
+
+    st.markdown("**2. Maga után vonás ($A \subseteq B$):**")
+    st.write("Az $A$ esemény maga után vonja a $B$ eseményt, ha $A$ minden egyes bekövetkezésekor $B$ is bekövetkezik.")
+
+    st.markdown("**3. Egymást kizáró események ($A \cap B = \emptyset$):**")
+    st.write("A és B egymást kizáró események, ha egyszerre nem következhetnek be.")
+
+    st.markdown("**4. Egymást páronként kizáró események:**")
+    st.write("Egy eseményekből álló, legalább 2 elemű halmaz elemeit egymást páronként kizáró eseményeknek nevezzük, ha közülük bármely kettőt kiválasztva azok egymást kizáró események.")
+
+    st.markdown("**5. Teljes eseményrendszer:**")
+    st.write("$\mathcal{F} \subseteq \wp(\Omega)$ halmazt teljes eseményrendszernek nevezzük, ha osztályozása $\Omega$ eseménytérnek (azaz páronként kizárják egymást, és az uniójuk kiadja a teljes eseményteret).")
+
     st.markdown("---")
 
     # ==========================================
-    # INTERAKTÍV TESZTELŐ: ESEMÉNYALGEBRA
+    # INTERAKTÍV TESZTELŐ 2: HALMAZOK ÉS RELÁCIÓK
     # ==========================================
-    st.markdown("### 🧮 Interaktív tesztelő: Halmazműveletek a gyakorlatban")
-    st.write("Legyen az alaphalmazunk ($\Omega$) egy 10-oldalú dobókocka (1-től 10-ig). Állítsd be az $A$ és $B$ események elemeit, és nézd meg, mit adnak ki a műveletek!")
+    st.markdown("### 🧮 Interaktív tesztelő: Műveletek és Relációk")
+    st.write("Legyen az alaphalmazunk ($\Omega$) egy 10-oldalú dobókocka (1-től 10-ig). Állítsd be az $A$ és $B$ események elemeit, és nézd meg, mit adnak ki a műveletek, illetve milyen relációban állnak egymással!")
 
     omega = set(range(1, 11))
 
@@ -193,21 +213,30 @@ with tab2:
     A = set(a_lista)
     B = set(b_lista)
 
-    st.write("#### Műveletek eredményei:")
-    
-    # Eredmények kiszámítása Python set műveletekkel
-    osszeg = A.union(B)
-    szorzat = A.intersection(B)
-    ellentett_a = omega.difference(A)
-    kulonbseg = A.difference(B)
-    szimm_diff = A.symmetric_difference(B)
-
-    # Segédfüggvény a szép kiíráshoz (ha üres a halmaz, kiírja, hogy ∅)
+    # Segédfüggvény a szép kiíráshoz
     def format_set(s):
         return str(sorted(list(s))) if s else "∅ (Lehetetlen esemény)"
 
-    st.success(f"**$A + B$ (Összeg):** `{format_set(osszeg)}`")
-    st.info(f"**$A \cdot B$ (Szorzat):** `{format_set(szorzat)}`")
-    st.warning(f"**$\overline{{A}}$ (A ellentettje):** `{format_set(ellentett_a)}`")
-    st.error(f"**$A - B$ (Különbség):** `{format_set(kulonbseg)}`")
-    st.markdown(f"> **$A \Delta B$ (Szimmetrikus differencia):** `{format_set(szimm_diff)}`")
+    # Eredmények kiszámítása Python set műveletekkel
+    st.write("#### Műveletek eredményei:")
+    st.success(f"**$A + B$ (Összeg):** `{format_set(A.union(B))}`")
+    st.info(f"**$A \cdot B$ (Szorzat):** `{format_set(A.intersection(B))}`")
+    st.warning(f"**$\overline{{A}}$ (A ellentettje):** `{format_set(omega.difference(A))}`")
+    st.error(f"**$A - B$ (Különbség):** `{format_set(A.difference(B))}`")
+    st.markdown(f"> **$A \Delta B$ (Szimmetrikus diff.):** `{format_set(A.symmetric_difference(B))}`")
+    
+    st.write("#### 🔍 Relációk ellenőrzése (A és B között):")
+    if A == B:
+        st.success("**Egyenlőség:** A és B egyenlő események!")
+    elif A.issubset(B):
+        st.info("**Maga után vonás:** A maga után vonja B-t ($A \subseteq B$).")
+    elif B.issubset(A):
+        st.info("**Maga után vonás:** B maga után vonja A-t ($B \subseteq A$).")
+        
+    if A.isdisjoint(B):
+        st.warning("**Kizáró események:** A és B egymást kizáró események ($A \cap B = \emptyset$).")
+    else:
+        st.write("A és B **NEM** zárják ki egymást (van közös kimenetelük).")
+        
+    if A.union(B) == omega and A.isdisjoint(B):
+        st.error("**Teljes eseményrendszer:** A és B együttesen egy teljes eseményrendszert alkotnak a 10-oldalú kockára!")
