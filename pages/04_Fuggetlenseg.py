@@ -66,6 +66,59 @@ with tab1:
         st.success("**Eredmény:** Látod? A két érték tökéletesen megegyezik ($1/52 = 1/52$), tehát a 'Pikk húzása' és a 'Király húzása' **független** események. És mivel van közös lapjuk (a metszetük nem üres), a tételnek megfelelően **NEM zárják ki egymást**!")
 
 with tab2:
-    st.markdown("### Kulcsfogalmak")
-    st.write("- **Események függetlensége:** Két esemény független, ha együttes bekövetkezésük (metszetük) valószínűsége egyenlő a valószínűségeik szorzatával: $P(AB) = P(A)P(B)$.")
-    st.write("- **Eseményrendszerek (teljes) függetlensége:** Nem elég, ha páronként függetlenek! Egy rendszer akkor teljesen független, ha bármely részhalmazukra igaz, hogy a metszetük valószínűsége a valószínűségek szorzata.")
+    st.header("🧠 Fogalmak definíciói")
+    st.write("A 4. fejezethez (Események függetlensége) tartozó hivatalos definíciók:")
+
+    # ==========================================
+    # 1. KÉT ESEMÉNY FÜGGETLENSÉGE
+    # ==========================================
+    st.markdown("### 1. Két esemény függetlensége")
+    st.write(r"Legyen $(\Omega, \mathcal{F}, P)$ valószínűségi mező és $A, B \in \mathcal{F}$.")
+    st.write("Ekkor azt mondjuk, hogy az $A$ esemény **független** a $B$-től, ha:")
+    st.latex(r"P(AB) = P(A) \cdot P(B)")
+
+    st.markdown("### 2. Eseményrendszerek (teljes) függetlensége")
+    st.write(r"Legyen $(\Omega, \mathcal{F}, P)$ valószínűségi mező és $\mathcal{F} \supseteq \mathcal{H} := \{A_i \in \mathcal{F} : i = 1, 2, \dots, n\}$.")
+    st.write(r"Ekkor $\mathcal{H}$ eseményrendszer elemeit **(teljesen) függetlennek nevezzük**, ha bármely $\mathcal{G} \subseteq \mathcal{H}$ esetén:")
+    st.latex(r"P\left(\prod_{A_i \in \mathcal{G}} A_i\right) = \prod_{A_i \in \mathcal{G}} P(A_i)")
+    st.write(r"Ha $\mathcal{H}$ végtelen, akkor elemei függetlenek, ha bármely véges részrendszere független.")
+    
+    st.info("💡 **Magyarázat a képlethez:** A nagy $\prod$ szorzatjel azt jelenti, hogy nem elég, ha az eseményeket kettesével (páronként) vizsgáljuk! A rendszerből BÁRMENNYI (három, négy, stb.) eseményt is választunk ki, a közös metszetük valószínűsége meg kell hogy egyezzen a valószínűségek szorzatával.")
+
+    st.markdown("---")
+
+    # ==========================================
+    # INTERAKTÍV TESZTELŐ: PÁRONKÉNT VS TELJESEN FÜGGETLEN
+    # ==========================================
+    st.markdown("### 🪙 Interaktív tesztelő: A nagy 'függetlenség' beugrató!")
+    st.write("Dobjunk fel 2 darab pénzérmét (kimenetelek: FF, FÍ, ÍF, ÍÍ - mindegyik esélye 1/4 = 0.25).")
+    st.write("Vizsgáljuk meg a következő 3 eseményt:")
+    st.write("- **A esemény:** Az 1. érme FEJ $\implies$ {FF, FÍ} $\implies P(A) = 0.5$")
+    st.write("- **B esemény:** A 2. érme FEJ $\implies$ {FF, ÍF} $\implies P(B) = 0.5$")
+    st.write("- **C esemény:** A két érme KÜLÖNBÖZŐ $\implies$ {FÍ, ÍF} $\implies P(C) = 0.5$")
+
+    if st.button("1. Lépés: Nézzük meg a páronkénti függetlenséget!"):
+        st.success("**Vizsgáljuk meg az eseményeket kettesével (páronként):**")
+        
+        st.write("**A és B:** Metszetük az {FF}. Esélye $0.25$.")
+        st.latex(r"P(AB) = 0.25 \quad \text{és} \quad P(A)P(B) = 0.5 \cdot 0.5 = 0.25 \implies \text{Függetlenek!}")
+        
+        st.write("**A és C:** Metszetük az {FÍ}. Esélye $0.25$.")
+        st.latex(r"P(AC) = 0.25 \quad \text{és} \quad P(A)P(C) = 0.5 \cdot 0.5 = 0.25 \implies \text{Függetlenek!}")
+        
+        st.write("**B és C:** Metszetük az {ÍF}. Esélye $0.25$.")
+        st.latex(r"P(BC) = 0.25 \quad \text{és} \quad P(B)P(C) = 0.5 \cdot 0.5 = 0.25 \implies \text{Függetlenek!}")
+        
+        st.info("Úgy tűnik, mindenki független mindenkivel! Akkor ez egy teljesen független eseményrendszer, igaz? **Kattints a 2. gombra!**")
+
+    if st.button("2. Lépés: Nézzük meg a TELJES függetlenséget (Definíció tesztje)!"):
+        st.warning("**Most vizsgáljuk meg mind a HÁRMAT egyszerre (ahogy a definíció nagy szorzatjele kéri):**")
+        st.write("Mekkora az esélye annak, hogy az 1. érme FEJ (A), a 2. érme FEJ (B), ÉS a két érme KÜLÖNBÖZŐ (C)?")
+        
+        st.write("Mivel ez lehetetlen (ha mindkettő Fej, akkor nem lehetnek különbözőek), a metszet üres halmaz, esélye 0!")
+        st.latex(r"P(ABC) = P(\emptyset) = \mathbf{0}")
+        
+        st.write("Ezzel szemben a valószínűségeik szorzata:")
+        st.latex(r"P(A) \cdot P(B) \cdot P(C) = 0.5 \cdot 0.5 \cdot 0.5 = \mathbf{0.125}")
+        
+        st.error(r"**Végeredmény:** Mivel $0 \neq 0.125$, az $A, B, C$ események **NEM teljesen függetlenek!** Bár páronként függetlenek voltak, a teljes rendszer elbukott a hivatalos definíció tesztjén.")
