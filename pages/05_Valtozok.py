@@ -109,7 +109,6 @@ with tab1:
                 
             st.success(f"**A kiválasztott esemény kimenetelei:** `{eredmeny_halmaz}`")
             st.caption(f"💡 *Hogyan jött ki matemetikailag?* {magyarazat}")
-
         with st.expander("5.3 Diszkrét eloszlás összege"):
             st.write("Kidolgozásra vár...")
         with st.expander("5.5 Eloszlásfüggvény tulajdonságai *"):
