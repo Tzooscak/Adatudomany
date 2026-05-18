@@ -446,10 +446,199 @@ with tab1:
             st.success(r"✅ **Sikeres építés!** A terület pontosan 1. Az 5.12-es tétel garantálja, hogy létezik ilyen valószínűségi változó!")
         else:
             st.error(rf"❌ **Sikertelen építés!** A terület jelenleg {terulet:.2f}. Próbáld úgy beállítani az alapot és a magasságot, hogy a szorzatuk pontosan 2 legyen (így osztva kettővel 1-et ad)!")
-    with st.expander("5.16 A várható érték tulajdonságai"):
-        st.write("Kidolgozásra vár...")
-    with st.expander("5.18 A szórás tulajdonságai *"):
-        st.write("Kidolgozásra vár...")
+    with st.expander(r"5.13 Tétel (Az együttes sűrűségfüggvény integrálja)"):
+        # ==========================================
+        # 5.13 TÉTEL: EGYÜTTES SŰRŰSÉGFÜGGVÉNY INTEGRÁLJA
+        # ==========================================
+        st.write(r"**5.13 Tétel (Az együttes sűrűségfüggvény integrálja $(-\infty, \infty)$-n)**")
+        st.write(r"Minden $f_{\xi,\eta} : \mathbb{R}^2 \rightarrow \mathbb{R}$ együttes sűrűségfüggvényre igaz, hogy a teljes kétdimenziós téren vett integrálja 1:")
+        st.latex(r"\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} f_{\xi,\eta}(x, y) dx dy = 1")
+        
+        st.markdown(r"**Magyarázat:**")
+        st.write(r"Ez az 5.11-es tétel ('A valószínűség-tészta' szabály) 2D-s kiterjesztése. Képzeld el a valószínűséget most ne egyetlen vonalon elkenve, hanem egy asztalon eloszló domborműként (például egy hegyként). A tétel azt mondja ki, hogy a hegy teljes térfogata (a 2D-s görbe alatti térrész) pontosan 1 (azaz 100%) kell, hogy legyen. Bárhogyan is oszlik el az esély a $\xi$ és $\eta$ tengelyek mentén, a biztos esemény valószínűsége marad 1.")
+    with st.expander(r"5.14 Tétel (Sűrűségfüggvény és függetlenség)"):
+        # ==========================================
+        # 5.14 TÉTEL: FÜGGETLENSÉG PDF-FEL
+        # ==========================================
+        st.write(r"**5.14 Tétel (Sűrűségfüggvény és függetlenség)**")
+        st.write(r"Legyen az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változók együttes eloszlása abszolút folytonos.")
+        st.write(r"Ekkor $\xi$ és $\eta$ pontosan akkor **függetlenek**, ha a közös együttes sűrűségfüggvényük megegyezik a perem-sűrűségfüggvényeik szorzatával (egy nullmértékű halmaz kivételével $\forall x, y \in \mathbb{R}$-ra):")
+        
+        st.latex(r"f_{\xi,\eta}(x, y) = f_\xi(x) \cdot f_\eta(y)")
+
+        st.markdown(r"**Magyarázat:**")
+        st.write(r"Ez a klasszikus 'szorzásszabály' kiterjesztése folytonos függvényekre. Ha két mérés (pl. egy ember magassága és az IQ-szintje) teljesen független egymástól, akkor a 2D-s 'hegy' (az együttes sűrűség) bármelyik pontjának magasságát megkapod, ha egyszerűen összeszorzod a két 1D-s görbe magasságát az adott koordinátákon. A 'nullmértékű halmaz kivételével' pedig csak matematikai óvatoskodás: egy-két végtelenül vékony pontban lehet hiba, az nem rontja el az integrált.")
+
+        st.markdown(r"##### ✖️ Szimuláció 5.14: A Szorzásszabály")
+        st.write(r"Vizsgáljunk két független eseményt! $\xi$ legyen a hőmérséklet, $\eta$ pedig egy dobókocka eredménye. Állítsd be a perem-sűrűségeket egy adott pontban, és a rendszer kiszámolja a 2D-s együttes sűrűséget a tétel alapján!")
+        
+        col_fx, col_fy = st.columns(2)
+        with col_fx:
+            f_x_val = st.slider("Hőmérséklet sűrűsége adott pontban, f(x):", 0.0, 1.0, 0.4, 0.1)
+        with col_fy:
+            f_y_val = st.slider("Kockadobás sűrűsége adott pontban, f(y):", 0.0, 1.0, 0.5, 0.1)
+            
+        st.success(r"**Az együttes sűrűségfüggvény magassága az adott (x,y) koordinátán:**")
+        st.latex(rf"f_{{\xi,\eta}}(x, y) = {f_x_val:.1f} \cdot {f_y_val:.1f} = \mathbf{{{f_x_val * f_y_val:.2f}}}")
+    with st.expander(r"5.15 Tétel (aξ + bη + c várható értéke)"):
+        # ==========================================
+        # 5.15 TÉTEL: A VÁRHATÓ ÉRTÉK LINEARITÁSA
+        # ==========================================
+        st.write(r"**5.15 Tétel ($a\xi + b\eta + c$ várható értéke)**")
+        st.write(r"Legyen $\xi$ és $\eta$ valószínűségi változó és $a, b, c \in \mathbb{R}$. Ekkor:")
+        st.latex(r"E(a\xi + b\eta + c) = aE(\xi) + bE(\eta) + c")
+
+        st.markdown(r"**Magyarázat:**")
+        st.write(r"Ezt hívják a **várható érték linearitásának**. Nagyon hasznos tulajdonság! Azt jelenti, hogy ha egy játékban megduplázzák a tétet ($2\xi$), akkor a várható nyereményed is a duplája lesz ($2E(\xi)$). Ha pedig mindenki kap fix 1000 Ft belépési bónuszt ($+ c$), akkor a várható érték is pontosan ennyivel nő. Még akkor is igaz, ha $\xi$ és $\eta$ nem függetlenek egymástól!")
+
+        st.markdown(r"##### 🧮 Szimuláció 5.15: Fizetésemelés!")
+        st.write(r"Képzeld el, hogy a programozói alapfizetésed egy cégben változó (függ a projektektől), várható értéke $E(\xi) = 600$ ezer Ft. Év végén a főnököd bejelenti: mindenki fizetését megemeli $10\%$-kal (azaz $1.1$-szeresére), és ad egy fix $50$ ezer Ft-os bónuszt. Mennyi lesz az új várható fizetésed?")
+        
+        col_a, col_c = st.columns(2)
+        with col_a:
+            szorzo = st.slider("Szorzó (a):", 1.0, 2.0, 1.1, 0.1)
+        with col_c:
+            bonusz = st.slider("Fix bónusz (c) ezer Ft-ban:", 0, 200, 50, 10)
+            
+        e_xi = 600
+        uj_fizetes = (szorzo * e_xi) + bonusz
+        
+        st.success(r"**A tétel alapján az új várható érték:**")
+        st.latex(rf"E({szorzo:.1f} \cdot \xi + {bonusz}) = {szorzo:.1f} \cdot E(\xi) + {bonusz} = {szorzo:.1f} \cdot {e_xi} + {bonusz} = \mathbf{{{uj_fizetes:.0f}}}")
+    with st.expander(r"5.16 Tétel (A várható érték tulajdonságai)"):
+        # ==========================================
+        # 5.16 TÉTEL: A VÁRHATÓ ÉRTÉK TULAJDONSÁGAI
+        # ==========================================
+        st.write(r"**5.16 Tétel (A várható érték tulajdonságai)**")
+        st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változóknak létezik várható értéke.")
+        
+        st.markdown(r"**(1) Nemnegativitás megőrzése:**")
+        st.latex(r"\text{Ha } \xi \ge 0, \text{ akkor } E(\xi) \ge 0.")
+        st.caption(r"Magyarázat: Ha egy változó (pl. valakinek a magassága) sosem lehet negatív, akkor az átlaga (várható értéke) sem lehet az.")
+
+        st.markdown(r"**(2) A biztos nulla:**")
+        st.latex(r"\text{Ha minden } \omega \in \Omega \text{ esetén } \xi(\omega) \ge 0 \text{ és } E(\xi) = 0, \text{ akkor } P(\xi = 0) = 1.")
+        st.caption(r"Magyarázat: Ha egy kísérlet eredménye sosem negatív, de az átlaga mégis kereken 0, az csak úgy lehetséges, ha 100% eséllyel mindig pontosan 0-t 'dobunk'.")
+
+        st.markdown(r"**(3) Konstans várható értéke:**")
+        st.latex(r"\text{Ha valamely } c \in \mathbb{R} \text{ esetén } P(\xi = c) = 1, \text{ akkor } E(\xi) = c.")
+        st.caption(r"Magyarázat: Ha egy 'változó' valójában nem is változik (mindig c-t vesz fel), akkor az átlaga is c marad.")
+
+        st.markdown(r"**(4) Monotonitás:**")
+        st.latex(r"\text{Ha } \xi \ge \eta, \text{ akkor } E(\xi) \ge E(\eta).")
+        st.caption(r"Magyarázat: Ha András ($\xi$) minden lehetséges helyzetben több pontot szerez, mint Béla ($\eta$), akkor András pontjainak átlaga is nagyobb lesz.")
+
+        st.markdown(r"**(5) Függetlenek szorzata:**")
+        st.write(r"Ha $\xi$ és $\eta$ egyaránt diszkrétek vagy abszolút folytonosak, és **függetlenek** egymástól, akkor $\xi\eta$-nak is létezik várható értéke, és:")
+        st.latex(r"E(\xi\eta) = E(\xi) \cdot E(\eta)")
+        st.caption(r"Magyarázat: A független változók szorzatának várható értéke megegyezik a várható értékeik szorzatával.")
+
+        st.markdown(r"---")
+        st.markdown(r"##### 🎲 Szimuláció 5.16: Független változók szorzata")
+        st.write(r"Vizsgáljuk meg az **(5)-ös tulajdonságot** két független dobókockával! Legyen $\xi$ az egyik, $\eta$ a másik kocka dobásának eredménye. Mindkét kocka várható értéke külön-külön tudjuk, hogy $3.5$.")
+        st.write(r"Mivel a két dobás teljesen független egymástól, a tétel szerint a szorzatuk elméleti várható értéke:")
+        st.latex(r"E(\xi \cdot \eta) = E(\xi) \cdot E(\eta) = 3.5 \cdot 3.5 = \mathbf{12.25}")
+        
+        st.write(r"Végezzünk el sok ezer szimulált dupla kockadobást a háttérben, és nézzük meg, tényleg ehhez az elméleti számhoz közelít-e a szorzatok tapasztalati átlaga!")
+        
+        dobasok_szama = st.slider("Szimulált dobások (szorzatok) száma:", 100, 10000, 1000, 100)
+        
+        import random
+        osszeg = 0
+        for _ in range(dobasok_szama):
+            # Első kocka * Második kocka
+            osszeg += random.randint(1, 6) * random.randint(1, 6)
+            
+        tapasztalati_atlag = osszeg / dobasok_szama
+        
+        st.info(rf"**Tapasztalati átlag {dobasok_szama} dobás alapján:** **{tapasztalati_atlag:.3f}**")
+        
+        if abs(tapasztalati_atlag - 12.25) < 0.5:
+            st.success(r"Látod? A tapasztalati átlag nagyon közel van a tétel által jósolt $12.25$-ös elméleti várható értékhez!")
+    with st.expander(r"5.17 Tétel (A szórásnégyzet kiszámolása)"):
+        # ==========================================
+        # 5.17 TÉTEL: A SZÓRÁSNÉGYZET KISZÁMOLÁSA
+        # ==========================================
+        st.write(r"**5.17 Tétel (A szórásnégyzet kiszámolása)**")
+        st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ valószínűségi változónak létezik várható értéke.")
+        st.write(r"$\xi$-nek pontosan akkor létezik szórása, ha $\xi^2$-nek létezik várható értéke, és ekkor:")
+        st.latex(r"D^2(\xi) = E(\xi^2) - E^2(\xi)")
+
+        st.markdown(r"**Megjegyzés (Hogyan számoljuk az $E(\xi^2)$-et?):**")
+        st.write(r"A várható érték definíciójában szereplő esetekben rendre a következő értékek jelentik $\xi^2$ várható értékét (amennyiben ezek az értékek végesek):")
+        
+        st.latex(r"(0) \text{ Véges diszkrét:} \quad E(\xi^2) = \sum_{k=1}^{n} x_k^2 \cdot P(\xi = x_k)")
+        st.latex(r"(1) \text{ Végtelen diszkrét:} \quad E(\xi^2) = \sum_{i} p_i x_i^2")
+        st.latex(r"(2) \text{ Folytonos:} \quad E(\xi^2) = \int_{-\infty}^{\infty} x^2 f_\xi(x) dx")
+
+        st.info(r"💡 **Konyhanyelven (Vizsgatipp!):** Ezt hívják a szórásnégyzet 'számolási képletének'. A definíció szerinti számolás nagyon lassú lenne. Ehelyett ezzel a tétellel sokkal gyorsabb a dolgunk: csak kiszámolod a sima várható értéket (majd négyzetre emeled), meg kiszámolod a négyzetek várható értékét, és a végén kivonod a kettőt egymásból!")
+
+        st.markdown(r"##### 🎲 Szimuláció 5.17: Kockadobás Szórásnégyzete")
+        st.write(r"Számoljuk ki egy szabályos $N$-oldalú dobókocka szórásnégyzetét a fenti gyors számolási képlettel!")
+        
+        n_oldal = st.slider("Kocka oldalainak száma (N):", 4, 20, 6, 1)
+        
+        # Matematikai számolás
+        e_xi = (n_oldal + 1) / 2.0
+        e_xi_negyzet = e_xi ** 2
+        
+        # E(ξ^2) = (1^2 + 2^2 + ... + N^2) / N
+        # A négyzetösszeg képlete: N(N+1)(2N+1)/6. Ezt osztva N-nel: (N+1)(2N+1)/6
+        e_xi2 = ((n_oldal + 1) * (2 * n_oldal + 1)) / 6.0
+        
+        var_xi = e_xi2 - e_xi_negyzet
+        
+        col_e1, col_e2 = st.columns(2)
+        with col_e1:
+            st.write(r"**1. Lépés:** $\xi$ várható értékének négyzete:")
+            st.latex(rf"E(\xi) = {e_xi:.2f} \implies E^2(\xi) = \mathbf{{{e_xi_negyzet:.2f}}}")
+        with col_e2:
+            st.write(r"**2. Lépés:** $\xi^2$ várható értéke:")
+            st.latex(rf"E(\xi^2) = \frac{{1^2 + 2^2 + \dots + {n_oldal}^2}}{{{n_oldal}}} = \mathbf{{{e_xi2:.2f}}}")
+            
+        st.success(r"**3. Lépés: A szórásnégyzet a Tétel alapján (Különbség):**")
+        st.latex(rf"D^2(\xi) = E(\xi^2) - E^2(\xi) = {e_xi2:.2f} - {e_xi_negyzet:.2f} = \mathbf{{{var_xi:.2f}}}")
+    with st.expander(r"5.18 Tétel (A szórás tulajdonságai)"):
+        # ==========================================
+        # 5.18 TÉTEL: A SZÓRÁS TULAJDONSÁGAI
+        # ==========================================
+        st.write(r"**5.18 Tétel (A szórás tulajdonságai)**")
+        st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ valószínűségi változónak létezik szórása. Ekkor minden $a, b, c \in \mathbb{R}$ konstansra:")
+
+        st.markdown(r"**(1) Minimális négyzetes eltérés:**")
+        st.latex(r"D^2(\xi) \le E\left((\xi - c)^2\right), \quad \text{egyenlő } \Longleftrightarrow \text{ ha } c = E(\xi).")
+        st.caption(r"Magyarázat: Bármilyen 'c' számot is vonunk le a változóból, az eltérések négyzetének átlaga akkor lesz a legkisebb, ha a várható értéket (az igazi átlagot) vonjuk le. A szórásnégyzet tehát a lehető legkisebb átlagos négyzetes hiba.")
+
+        st.markdown(r"**(2) Nemnegativitás és a biztos konstans:**")
+        st.latex(r"D(\xi) \ge 0, \quad \text{egyenlő } \Longleftrightarrow \text{ ha } P(\xi = E(\xi)) = 1.")
+        st.caption(r"Magyarázat: A szórás sosem negatív. Pontosan akkor nulla, ha a változó egyáltalán nem 'szóródik', vagyis 100% eséllyel fixen mindig ugyanazt az egyetlen értéket veszi fel.")
+
+        st.markdown(r"**(3) Lineáris transzformáció szórása:**")
+        st.write(r"$a\xi + b$ és $c$ valószínűségi változóknak is létezik szórása, és:")
+        st.latex(r"D^2(a\xi + b) = a^2 D^2(\xi), \quad \text{vagyis} \quad D(a\xi + b) = |a| D(\xi)")
+        st.latex(r"D^2(c) = 0, \quad \text{vagyis} \quad D(c) = 0")
+        st.caption(r"Magyarázat (Vizsgaszabály!): Ha egy eloszlás minden eleméhez hozzáadunk 'b'-t, a szórás NEM változik (a grafikon csak eltolódik). Ha viszont megszorozzuk 'a'-val, a szórás is |a|-szorosára nő. Egy fix 'c' szám szórása pedig nulla.")
+
+        st.markdown(r"---")
+        st.markdown(r"##### 📏 Szimuláció 5.18: Fizetésemelés és Szórás")
+        st.write(r"Nézzük meg a (3)-as szabályt a gyakorlatban! Adott egy cég, ahol a fizetések szórása (a bérszakadék mértéke) $D(\xi) = 150$ ezer Ft. Emeljük meg a fizetéseket szorzóval és egy fix bónusszal!")
+
+        col_a, col_b = st.columns(2)
+        with col_a:
+            szorzo_a = st.slider("Fizetés-szorzó (a):", -2.0, 3.0, 2.0, 0.5)
+        with col_b:
+            bonusz_b = st.slider("Fix bónusz (b):", 0, 500, 100, 50)
+
+        eredeti_d = 150
+        uj_d = abs(szorzo_a) * eredeti_d
+
+        st.success(r"**Az új szórás a Tétel alapján:**")
+        st.latex(rf"D({szorzo_a:.1f}\xi + {bonusz_b}) = |{szorzo_a:.1f}| \cdot D(\xi) = {abs(szorzo_a):.1f} \cdot {eredeti_d} = \mathbf{{{uj_d:.0f}}}")
+        
+        if bonusz_b > 0:
+            st.info(r"Vedd észre: a fix bónusz (b) egyáltalán nem jelenik meg a szórás végeredményében! Mindenki ugyanannyival kapott többet, így az egymáshoz viszonyított távolságuk nem nőtt.")
+        if szorzo_a < 0:
+            st.warning(r"Mínuszos szorzó esetén is a szórás (a távolság) pozitív marad a képletben lévő abszolútérték miatt!")
     with st.expander("5.19 A kovariancia kiszámolása"):
         st.write("Kidolgozásra vár...")
     with st.expander("5.20 Kovariancia és függetlenség"):
@@ -691,3 +880,189 @@ with tab2:
     st.latex(rf"F({x_kevert:.2f}) = \mathbf{{{f_val:.2f}}}")
     st.progress(float(f_val))
 
+    # ==========================================
+    # 7. VALÓSZÍNŰSÉGI VEKTORVÁLTOZÓ ÉS EGYÜTTES ELOSZLÁS
+    # ==========================================
+    st.markdown(r"### 7. Valószínűségi vektorváltozó és Együttes eloszlás")
+    
+    st.markdown(r"#### Valószínűségi vektorváltozó")
+    st.write(r"Legyen $\xi$ és $\eta$ valószínűségi változó ugyanazon az $(\Omega, \mathcal{F}, P)$ valószínűségi mezőn. Ekkor a $(\xi, \eta)$ párt **valószínűségi vektorváltozónak** (Random Vector Variable) nevezzük.")
+    st.info(r"💡 **Gyakorlati jelentés:** Sokszor egy kísérlet során nem csak egy, hanem egyszerre több dolgot is megfigyelünk. Például egy embernél mérjük a testmagasságát ($\xi$) ÉS a testtömegét ($\eta$). Ezeket együtt egy $(\xi, \eta)$ vektorként kezeljük, mert összefügghetnek!")
+
+    st.markdown(r"#### Együttes eloszlás (Diszkrét esetben)")
+    st.write(r"Ha $\xi$ és $\eta$ **diszkrét** valószínűségi változók, akkor az **együttes eloszlásukon** (Joint Distribution) a következő sorozatot értjük:")
+    st.latex(r"\langle p_{k,l} \rangle : \mathbb{R}_\xi \times \mathbb{R}_\eta \rightarrow [0, 1]")
+    st.latex(r"p_{k,l} := P(\xi = k, \eta = l)")
+    st.write(r"Ahol a vessző az 'ÉS' kapcsolatot (metszetet) jelenti: $\{\xi = k, \eta = l\} := \{\xi = k\} \cap \{\eta = l\}$.")
+    
+    # ==========================================
+    # INTERAKTÍV TESZTELŐ: EGYÜTTES ELOSZLÁS
+    # ==========================================
+    st.markdown(r"##### 📊 Interaktív tesztelő: Együttes eloszlás (Két érme)")
+    st.write(r"Dobjunk fel két érmét! Legyen $\xi$ az első érme eredménye (0=Írás, 1=Fej), $\eta$ pedig a második érme eredménye (0=Írás, 1=Fej). Nézzük meg az együttes eloszlásukat!")
+    
+    st.write(r"Válaszd ki, melyik $p_{k,l}$ együttes valószínűségre vagy kíváncsi:")
+    col_k, col_l = st.columns(2)
+    with col_k:
+        k_val = st.selectbox("Első érme (ξ = k):", [0, 1], format_func=lambda x: "1 (Fej)" if x==1 else "0 (Írás)")
+    with col_l:
+        l_val = st.selectbox("Második érme (η = l):", [0, 1], format_func=lambda x: "1 (Fej)" if x==1 else "0 (Írás)")
+        
+    st.success(rf"**A kiválasztott együttes valószínűség:**")
+    st.latex(rf"p_{{{k_val},{l_val}}} = P(\xi = {k_val}, \eta = {l_val}) = \frac{{1}}{{2}} \cdot \frac{{1}}{{2}} = \mathbf{{0.25}} \text{{ (25%)}}")
+    st.write(r"Mivel a két érme független, mind a 4 lehetséges kombináció (0-0, 0-1, 1-0, 1-1) esélye pontosan $0.25$. Az összes $p_{k,l}$ összege természetesen kiadja az $1$-et (100%-ot)!")
+
+    # ==========================================
+    # 8. PEREMELOSZLÁSOK ÉS EGYÜTTES ELOSZLÁSFÜGGVÉNY
+    # ==========================================
+    st.markdown(r"### 8. Peremeloszlás és Együttes eloszlásfüggvény")
+    
+    st.markdown(r"#### Peremeloszlások (Marginal Distributions)")
+    st.write(r"Legyen $\xi$ és $\eta$ valószínűségi változó $(\Omega, \mathcal{F}, P)$-n. Ekkor $\xi$ és $\eta$ (önálló) eloszlásai a $(\xi, \eta)$ valószínűségi vektorváltozó **peremeloszlásai**.")
+    
+    st.info(r"💡 **Konyhanyelven:** Képzelj el egy 2D-s táblázatot, ahol a sorok egy dobókocka, az oszlopok egy érme eredményeit mutatják. Az *együttes eloszlás* a táblázat belseje. A *peremeloszlás* pedig az, amikor az egyik változót letakarod a kezeddel, mintha ott sem lenne, és csak a maradék egyetlen változó eloszlását vizsgálod. A nevét onnan kapta, hogy régen a statisztikusok a táblázatok 'peremére' (szélére) összegezték a sorokat és az oszlopokat.")
+
+    st.markdown(r"#### Együttes eloszlásfüggvény (Joint CDF)")
+    st.write(r"Az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változók **együttes eloszlásfüggvénye** a 2D-s térben ($x, y$ koordinátákon) értelmezett függvény:")
+    st.latex(r"F_{\xi,\eta} : \mathbb{R}^2 \rightarrow [0, 1], \quad F_{\xi,\eta}(x,y) := P(\xi < x, \eta < y)")
+    st.write(r"ahol a vessző 'ÉS' kapcsolatot (metszetet) jelent: $\{\xi < x, \eta < y\} := \{\xi < x\} \cap \{\eta < y\}$.")
+    
+    st.write(r"Ekkor a különálló $F_\xi$ és $F_\eta$ függvényeket a $(\xi, \eta)$ valószínűségi vektorváltozó **perem-eloszlásfüggvényeinek** nevezzük.")
+
+    # ==========================================
+    # 9. EGYÜTTES SŰRŰSÉGFÜGGVÉNY (2D PDF) ÉS PEREM-SŰRŰSÉG
+    # ==========================================
+    st.markdown(r"### 9. Együttes sűrűségfüggvény és Perem-sűrűségfüggvény")
+    
+    st.write(r"$\xi$ és $\eta$ együttes eloszlása **abszolút folytonos**, ha minden $x, y \in \mathbb{R}$-ra létezik $f_{\xi,\eta} : \mathbb{R}^2 \rightarrow \mathbb{R}$ nemnegatív függvény, amelyre a halmozott eloszlásfüggvény felírható kettős integrálként:")
+    st.latex(r"F_{\xi,\eta}(x, y) = \int_{-\infty}^{x} \int_{-\infty}^{y} f_{\xi,\eta}(u, v) dv du")
+    
+    st.write(r"Ekkor ezt az $f_{\xi,\eta}$ függvényt a $\xi$ és $\eta$ **együttes sűrűségfüggvényének** (Joint PDF) nevezzük.")
+    
+    st.write(r"Továbbá a különálló $f_\xi$ és $f_\eta$ függvényeket a $(\xi, \eta)$ valószínűségi vektorváltozó **perem-sűrűségfüggvényeinek** (Marginal PDFs) nevezzük.")
+    
+    st.info(r"💡 **Konyhanyelven:** Ez a 2D-s megfelelője a sima sűrűségfüggvénynek. Míg a sima $f(x)$ egy vonal (görbe) feletti magasságot mutatott, az együttes sűrűségfüggvény egy 2D-s sík (mint egy térkép) feletti domborzatot, egy 'hegyet' ír le. A perem-sűrűségfüggvény pedig az, amikor ezt a hegyet pontosan oldalról nézed, és csak az egyik dimenzió mentén vizsgálod a sziluettjét.")
+
+    # ==========================================
+    # 10. FÜGGETLEN VALÓSZÍNŰSÉGI VÁLTOZÓK
+    # ==========================================
+    st.markdown(r"### 10. Független valószínűségi változók")
+    
+    st.write(r"Az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változók **függetlenek** (Independent Random Variables), ha minden valós $x$ és $y$ értékre a közös eloszlásfüggvényük megegyezik a perem-eloszlásfüggvények szorzatával:")
+    
+    st.latex(r"F_{\xi,\eta}(x, y) = F_\xi(x) \cdot F_\eta(y)")
+    
+    st.info(r"💡 **Konyhanyelven:** Két dolog akkor független, ha az egyik esélye egyáltalán nem befolyásolja a másikat. A matematikában ezt úgy ellenőrizzük, hogy megnézzük: a 'kettő együtt teljesül' valószínűsége megegyezik-e a külön-külön vett valószínűségek szorzatával. Ugyanez igaz volt a 3. fejezetben az elemi eseményekre is ($P(A \cap B) = P(A) \cdot P(B)$), most pedig a halmozott valószínűségekre (CDF) is érvényes kiterjesztettük.")
+
+    # ==========================================
+    # 11. VÁRHATÓ ÉRTÉK (EXPECTED VALUE)
+    # ==========================================
+    st.markdown(r"### 11. Várható érték, $E(\xi)$")
+    
+    st.write(r"Legyen $\xi$ az $(\Omega, \mathcal{F}, P)$-n értelmezett valószínűségi változó. Az $E(\xi)$ számot a $\xi$ **várható értékének** (Expected Value) nevezzük, és a következőképpen definiáljuk:")
+
+    st.markdown(r"**(0) Véges diszkrét eset:**")
+    st.write(r"Ha $\xi$ diszkrét és az értékkészlete véges, azaz $\text{rng}(\xi) = \{x_1, x_2, \dots, x_n\}$, akkor:")
+    st.latex(r"E(\xi) := \sum_{k=1}^{n} x_k \cdot P(\xi = x_k)")
+    
+    st.markdown(r"**(1) Végtelen diszkrét eset:**")
+    st.write(r"Ha $\xi$ diszkrét, de az értékkészlete megszámlálhatóan végtelen, $\text{rng}(\xi) = \{x_1, x_2, \dots\}$, és teljesül az abszolút konvergencia feltétele:")
+    st.latex(r"\sum_{i} p_i |x_i| < \infty \quad \text{(ahol } p_i := P(\xi = x_i)\text{)}")
+    st.write(r"akkor legyen:")
+    st.latex(r"E(\xi) := \sum_{i} p_i x_i")
+
+    st.markdown(r"**(2) Abszolút folytonos eset:**")
+    st.write(r"Ha $\xi$ abszolút folytonos és teljesül az alábbi (abszolút integrálhatósági) feltétel:")
+    st.latex(r"\int_{-\infty}^{\infty} |x| f_\xi(x) dx < \infty")
+    st.write(r"akkor a várható érték:")
+    st.latex(r"E(\xi) := \int_{-\infty}^{\infty} x \cdot f_\xi(x) dx")
+
+    st.error(r"⚠️ **Fontos szabály az (1) és (2) esetekhez:** Ha a fenti konvergencia-feltételek *nem* teljesülnek (azaz a szumma vagy az integrál végtelenbe tart), akkor azt mondjuk, hogy **$E(\xi)$ nem létezik**!")
+
+    st.info(r"💡 **Konyhanyelven:** A várható érték egyszerűen egy súlyozott átlag. Minden lehetséges értéket ($x$) megszorzunk azzal, hogy mekkora eséllyel következik be ($P$ vagy $f(x)$), majd ezeket összeadjuk. Hosszú távon egy kaszinójátékban vagy egy tőzsdei befektetésnél a várható érték mutatja meg, hogy nyereséges leszel-e.")
+
+    # ==========================================
+    # INTERAKTÍV TESZTELŐ: VÁRHATÓ ÉRTÉK
+    # ==========================================
+    st.markdown(r"##### ⚖️ Szimuláció 11: Érdemes-e játszani?")
+    st.write(r"Képzeld el, hogy játszunk egy játékot: befizetsz 1,000 Ft-ot. Ha nyersz, kapsz 10,000 Ft-ot (azaz 9,000 Ft a tiszta haszon). Ha vesztesz, elbukod az ezrest ($-1000$ Ft). Állítsd be a nyerési esélyt, és nézzük meg a játék várható értékét ($E(\xi)$)!")
+    
+    nyeresi_esely = st.slider("Nyerés valószínűsége (p):", 0.0, 1.0, 0.05, 0.01)
+    vesztesi_esely = 1.0 - nyeresi_esely
+    
+    x_nyeres = 9000  # Tisztán nyert összeg
+    x_vesztes = -1000 # Elbukott összeg
+    
+    varhato_ertek = (x_nyeres * nyeresi_esely) + (x_vesztes * vesztesi_esely)
+    
+    st.latex(rf"E(\xi) = (9000 \cdot {nyeresi_esely:.2f}) + (-1000 \cdot {vesztesi_esely:.2f}) = \mathbf{{{varhato_ertek:.0f} \text{{ Ft}}}}")
+    
+    if varhato_ertek > 0:
+        st.success(r"✅ **Pozitív várható érték!** Bár néha veszíteni fogsz, ha ezt a játékot nagyon sokszor lejátszod, körönként átlagosan ennyi forintot fogsz nyerni. Ez egy jó üzlet!")
+    elif varhato_ertek == 0:
+        st.warning(r"⚖️ **Nulla várható érték (Igazságos játék).** Hosszú távon pont nullára jössz ki. Se nem nyersz, se nem vesztesz.")
+    else:
+        st.error(r"❌ **Negatív várható érték!** A kaszinók erre épülnek. Rövid távon lehet szerencséd, de ha sokszor játszol, körönként átlagosan biztosan veszíteni fogsz. Ne játssz!")
+
+    # ==========================================
+    # 12. MOMENTUM ÉS CENTRÁLIS MOMENTUM
+    # ==========================================
+    st.markdown(r"### 12. Momentum és Centrális momentum")
+    
+    st.write(r"Tegyük fel, hogy valamely $k \ge 0$ egészre és $\xi$ valószínűségi változóra léteznek a következő értékek:")
+    st.latex(r"E(\xi^k) \quad \text{és} \quad E\left((\xi - E(\xi))^k\right)")
+    
+    st.write(r"Ekkor ezeket rendre a $\xi$ valószínűségi változó:")
+    st.markdown(r"- **$k$-adik momentumának**, illetve")
+    st.markdown(r"- **$k$-adik centrális momentumának** nevezzük.")
+    
+    st.info(r"💡 **Kritikus észrevétel (Piros doboz a dián):** A várható érték ($E(\xi)$) nem más, mint a $\xi$ **első momentuma** (hiszen $k=1$ esetén $E(\xi^1) = E(\xi)$).")
+    
+    st.write(r"**További fontos észrevétel:**")
+    st.write(r"Magasabb rendű momentum létezése $\implies$ alacsonyabb rendű momentum létezése. (Tehát ha létezik a 4. momentum, akkor garantáltan létezik a 3., a 2., és az 1. is).")
+
+    st.markdown(r"##### 🔍 Miért jók nekünk a momentumok?")
+    st.write(r"A fizikához hasonlóan, ahol a momentumok egy test tömegeloszlását írják le, a statisztikában ezek az értékek egy eloszlás alakját határozzák meg:")
+    st.markdown(r"- **1. momentum ($k=1$):** Várható érték (Hol van az eloszlás közepe?)")
+    st.markdown(r"- **2. centrális momentum ($k=2$):** Szórásnégyzet/Variancia (Milyen széles az eloszlás?)")
+    st.markdown(r"- **3. centrális momentum ($k=3$):** Ferdeség (Jobbra vagy balra dől-e a haranggörbe?)")
+    st.markdown(r"- **4. centrális momentum ($k=4$):** Csúcsosság (Milyen hegyes a görbe teteje?)")
+
+    # ==========================================
+    # 13. SZÓRÁS ÉS SZÓRÁSNÉGYZET
+    # ==========================================
+    st.markdown(r"### 13. Szórás és Szórásnégyzet (Variancia)")
+    
+    st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ valószínűségi változónak és a $(\xi - E(\xi))^2$ kifejezésnek létezik várható értéke. Ekkor:")
+    
+    st.markdown(r"**1. Szórásnégyzet / Variancia (Variance):**")
+    st.latex(r"D^2(\xi) := E\left((\xi - E(\xi))^2\right)")
+    st.info(r"💡 **Észrevétel a piros dobozból:** Ez pontosan a $\xi$ **második centrális momentuma**! Azt méri, hogy az értékek átlagosan mennyire 'térnek el a négyzetesen' a várható értéktől.")
+    
+    st.markdown(r"**2. Szórás (Standard Deviation):**")
+    st.latex(r"D(\xi) := \sqrt{E\left((\xi - E(\xi))^2\right)}")
+    st.write(r"*(A szórás egyszerűen a szórásnégyzet négyzetgyöke.)*")
+    
+    st.warning(r"⚠️ **Fontos matematikai finomság (a dia aljáról):** Abból, hogy az $E(\xi)$ (várható érték) létezik, **NEM következik** automatikusan, hogy a $D(\xi)$ (szórás) is létezik! ($E(\xi) \text{ létezik } \not\Rightarrow D(\xi) \text{ létezik}$). Ennek az az oka, hogy a négyzetre emelés miatt az integrál/szumma a szórásnál már 'felrobbanhat' (végtelenbe tarthat), hiába volt a sima átlag véges.")
+
+    st.markdown(r"---")
+    st.markdown(r"##### 🎯 Szimuláció 13: Két mesterlövész esete")
+    st.write(r"A várható érték csak a 'közepet' mutatja meg. A szórás mondja meg, hogy mennyire 'szétzórtak' az adatok! Képzelj el két mesterlövészt. Mindkettő átlagosan pontosan a céltábla közepét (0 pont) találja el, de a szórásuk eltérő. Generáljunk 50-50 lövést mindkettőnek!")
+    
+    szoras_lovesz = st.slider("A Kezdő mesterlövész szórása (D):", 0.5, 5.0, 2.5, 0.5)
+    
+    import numpy as np
+    import pandas as pd
+    
+    # 1. mesterlövész: profi, fixen kicsi szórás (D=0.5)
+    lovesek_profi = np.random.normal(0, 0.5, 50)
+    # 2. mesterlövész: kezdő, változtatható szórás
+    lovesek_kezdo = np.random.normal(0, szoras_lovesz, 50)
+    
+    df_lovesek = pd.DataFrame({
+        "Profi lövész (D = 0.5)": lovesek_profi,
+        f"Kezdő lövész (D = {szoras_lovesz:.1f})": lovesek_kezdo
+    })
+    
+    st.scatter_chart(df_lovesek)
+    st.caption(r"A grafikonon (y tengely a találat helye) jól láthatod: a Profi lövész találatai sűrűn a 0 vonal körül csoportosulnak. A Kezdő lövész is átlagosan a 0 köré lő, de a találatai sokkal jobban 'szóródnak' a nagyobb $D$ miatt!")
