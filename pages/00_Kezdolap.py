@@ -13,7 +13,8 @@ Ez az alkalmazás a **2025. őszi vizsgatematika**  alapján készült.
             
 ### Opcionális gyakorlásnak
 3. **Interaktivitás:** Ahol érdemes (pl. eloszlások), ne csak képletet írj, hanem készíts kis Python szimulációkat is hogy rögzüljön!
-
+4. **Definiciók:** Érdemes a definiciókat gyakorolni nem bemagolni mert inkább gyakorlatiasan vannak számonkérve minthha gyakorlaton lennél.
+            
 #### Fontos emlékeztető:
 * A **csillaggal (*)** jelölt tételek bizonyítását nem kell tudni.
 * A vizsgán kerek, egész mondatokban kell indokolni, nem elég a vázlat.

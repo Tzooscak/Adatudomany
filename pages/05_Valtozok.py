@@ -639,12 +639,234 @@ with tab1:
             st.info(r"Vedd észre: a fix bónusz (b) egyáltalán nem jelenik meg a szórás végeredményében! Mindenki ugyanannyival kapott többet, így az egymáshoz viszonyított távolságuk nem nőtt.")
         if szorzo_a < 0:
             st.warning(r"Mínuszos szorzó esetén is a szórás (a távolság) pozitív marad a képletben lévő abszolútérték miatt!")
-    with st.expander("5.19 A kovariancia kiszámolása"):
-        st.write("Kidolgozásra vár...")
-    with st.expander("5.20 Kovariancia és függetlenség"):
-        st.write("Kidolgozásra vár...")
-    with st.expander("5.25 Korreláció és függőség *"):
-        st.write("Kidolgozásra vár...")
+    with st.expander(r"5.19 Tétel (A kovariancia kiszámolása)"):
+        # ==========================================
+        # 5.19 TÉTEL: A KOVARIANCIA KISZÁMOLÁSA
+        # ==========================================
+        st.write(r"**5.19 Tétel (A kovariancia kiszámolása)**")
+        st.write(r"Ha az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változók egyszerre diszkrétek vagy abszolút folytonosak, továbbá $\xi$-nek, $\eta$-nak és $\xi\eta$-nak létezik várható értéke, akkor létezik $\xi$ és $\eta$ kovarianciája, és:")
+        
+        st.latex(r"\text{cov}(\xi, \eta) = E(\xi\eta) - E(\xi)E(\eta)")
+        
+        st.info(r"💡 **Piros dobozos észrevétel a diáról:** A kovariancia tulajdonképpen a **függetlenség 'mérőszáma'**. Emlékszel az 5.16-os tételre? Ha két változó független, akkor $E(\xi\eta) = E(\xi)E(\eta)$. Ha ezt behelyettesítjük ide, akkor $E(\xi\eta) - E(\xi\eta) = 0$. Tehát **független változók kovarianciája MINDIG 0**!")
+        
+        if st.checkbox(r"💡 Részletes Bizonyítás (5.19)", key="biz5_19"):
+            st.write(r"A bizonyítás egyszerű algebrai bontás a várható érték linearitása (5.15 Tétel) alapján:")
+            st.latex(r"\text{cov}(\xi, \eta) = E\left((\xi - E(\xi))(\eta - E(\eta))\right)")
+            st.write("Beszorozva a zárójeleket:")
+            st.latex(r"= E\left(\xi\eta - \eta E(\xi) - \xi E(\eta) + E(\xi)E(\eta)\right)")
+            st.write("A várható érték linearitását alkalmazva (a konstans várható értékeket kiemelve):")
+            st.latex(r"= E(\xi\eta) - E(\eta)E(\xi) - E(\xi)E(\eta) + E(\xi)E(\eta)")
+            st.write("Összevonás után megkapjuk a tételt:")
+            st.latex(r"= E(\xi\eta) - E(\xi)E(\eta)")
+            st.success(r"A tétel bizonyítást nyert.")
+
+        st.markdown(r"---")
+        st.markdown(r"##### 🧮 Szimuláció 5.19: A számolási kiskapu")
+        st.write(r"Pont úgy, ahogy a szórásnégyzetnél, a kovarianciát is sokkal könnyebb ezzel a tétellel (várható értékekkel) számolni, mint az eredeti definícióval. Próbáld ki!")
+        
+        col_ex, col_ey, col_exy = st.columns(3)
+        with col_ex:
+            ex = st.number_input(r"$E(\xi)$ értéke:", value=3.5, step=0.5)
+        with col_ey:
+            ey = st.number_input(r"$E(\eta)$ értéke:", value=2.0, step=0.5)
+        with col_exy:
+            exy = st.number_input(r"$E(\xi\eta)$ szorzat várható értéke:", value=7.0, step=0.5)
+            
+        cov_calc = exy - (ex * ey)
+        
+        st.success(r"**A kovariancia a tétel alapján:**")
+        st.latex(rf"\text{{cov}}(\xi, \eta) = {exy} - ({ex} \cdot {ey}) = \mathbf{{{cov_calc:.2f}}}")
+        
+        if cov_calc == 0:
+            st.warning(r"Mivel a kovariancia $0$, $\xi$ és $\eta$ nagy eséllyel **függetlenek egymástól**.")
+        elif cov_calc > 0:
+            st.info(r"Pozitív kovariancia: a két változó **együtt mozog**.")
+        else:
+            st.error(r"Negatív kovariancia: a két változó **ellentétesen mozog**.")
+    with st.expander(r"5.20 Tétel (Kovariancia és függetlenség)"):
+        # ==========================================
+        # 5.20 TÉTEL: KOVARIANCIA ÉS FÜGGETLENSÉG
+        # ==========================================
+        st.write(r"**5.20 Tétel (Kovariancia és függetlenség)**")
+        st.write(r"Ha az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változók egyszerre diszkrétek vagy abszolút folytonosak, továbbá létezik várható értékük és **FÜGGETLENEK**, akkor létezik $\xi$ és $\eta$ kovarianciája, és:")
+        
+        st.latex(r"\text{cov}(\xi, \eta) = 0")
+        
+        st.error(r"⚠️ **A VIZSGÁK LEGNAGYOBB CSAPDÁJA (A piros megjegyzés):**")
+        st.write(r"Visszafelé ez **NEM IGAZ**! Attól, hogy a kovariancia nulla, a két változó még nagyon is függhet egymástól. A nulla kovariancia csupán annyit jelent, hogy nincs köztük *lineáris* (egyenes arányosságú) kapcsolat, de valamilyen bonyolultabb (pl. parabolikus) kapcsolat még simán lehet!")
+        st.latex(r"\text{cov}(\xi, \eta) = 0 \quad \not\Rightarrow \quad \xi \text{ és } \eta \text{ független.}")
+
+        st.markdown(r"---")
+        st.markdown(r"##### 🤯 Szimuláció 5.20: A Nulla Kovariancia Csapdája")
+        st.write(r"Lássunk egy példát, amikor a kovariancia $0$, a két változó mégis 100%-osan függ egymástól! Legyen $\xi$ egy véletlen egész szám $-2$ és $2$ között. Legyen $\eta$ egyszerűen a $\xi$ négyzete ($\eta = \xi^2$). Ezek egyértelműen függnek egymástól: ha $\xi = 2$, akkor $\eta$ garantáltan $4$!")
+        
+        import pandas as pd
+        
+        # Adatok generálása
+        xi_ertekek = [-2, -1, 0, 1, 2]
+        eta_ertekek = [x**2 for x in xi_ertekek]
+        
+        df_csapda = pd.DataFrame({
+            "ξ (Eredeti szám)": xi_ertekek,
+            "η (A szám négyzete)": eta_ertekek
+        })
+        
+        col_t, col_c = st.columns([1, 2])
+        with col_t:
+            st.write("**A kimenetelek táblázata:**")
+            st.dataframe(df_csapda, hide_index=True)
+            
+        with col_c:
+            # Várható értékek számolása
+            e_xi = sum(xi_ertekek) / len(xi_ertekek) # -2 -1 + 0 + 1 + 2 = 0
+            e_eta = sum(eta_ertekek) / len(eta_ertekek) # 4 + 1 + 0 + 1 + 4 = 10 / 5 = 2
+            
+            # E(ξ*η) számolása (ami ξ^3)
+            szorzat_atlag = sum([x * (x**2) for x in xi_ertekek]) / len(xi_ertekek) # -8 -1 + 0 + 1 + 8 = 0
+            
+            # Kovariancia képlet: E(XY) - E(X)E(Y)
+            cov_csapda = szorzat_atlag - (e_xi * e_eta)
+            
+            st.write(r"**Számoljuk ki a kovarianciát (5.19 tétel alapján):**")
+            st.latex(rf"E(\xi) = {e_xi}, \quad E(\eta) = {e_eta}")
+            st.latex(rf"E(\xi \cdot \eta) = {szorzat_atlag}")
+            st.success(rf"\text{{cov}}(\xi, \eta) = {szorzat_atlag} - ({e_xi} \cdot {e_eta}) = \mathbf{{{cov_csapda}}}")
+            
+        st.warning(r"Látod? A kovariancia pontosan $0$, mert a grafikon egy U-alakot (parabolát) ír le, nem pedig egy egyenest. A matematika lineárisan nem talál összefüggést, pedig $\eta$ teljesen ki van szolgáltatva $\xi$-nek!")
+    with st.expander(r"5.21 Tétel (A standardizált várható értéke és szórásnégyzete)"):
+        # ==========================================
+        # 5.21 TÉTEL: STANDARDIZÁLT VÁLTOZÓ
+        # ==========================================
+        st.write(r"**5.21 Tétel (A standardizált várható értéke és szórásnégyzete)**")
+        st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ valószínűségi változónak létezik standardizáltja ($\tilde{\xi}$). Ekkor:")
+        
+        st.latex(r"E(\tilde{\xi}) = 0 \quad \text{és} \quad D^2(\tilde{\xi}) = 1")
+
+        st.markdown(r"**Magyarázat (Miért logikus ez?):**")
+        st.write(r"Ez a korábbi 5.15-ös és 5.18-as tételek közvetlen következménye!")
+        st.write(r"1. Amikor a változóból kivonjuk a saját várható értékét ($\xi - E(\xi)$), akkor a 'középpont' pontosan a $0$-ra tolódik el.")
+        st.write(r"2. Amikor ezt az egészet elosztjuk a szórással ($D(\xi)$), akkor a 'szélességet' (az adat szóródását) pontosan $1$-re préseljük össze vagy nyújtjuk ki.")
+        st.write(r"Bármilyen eloszlásból is indulunk ki, a standardizálás után mindig egy $0$ közepű, $1$ szórású egységes eloszlást kapunk!")
+
+        st.markdown(r"---")
+        st.markdown(r"##### 📏 Szimuláció 5.21: A Matematikai Bizonyítás Gépezete")
+        st.write(r"Állíts be egy tetszőleges induló várható értéket és szórást, és nézd meg lépésről lépésre, hogyan 'darálja le' a matematika $0$-ra és $1$-re!")
+        
+        col_ex, col_dx = st.columns(2)
+        with col_ex:
+            eredeti_e = st.number_input(r"Eredeti $E(\xi)$ (Átlag):", value=50.0, step=5.0)
+        with col_dx:
+            eredeti_d = st.number_input(r"Eredeti $D(\xi)$ (Szórás):", min_value=0.1, value=10.0, step=1.0)
+            
+        st.write(r"**1. Lépés: A standardizált várható értékének levezetése (5.15-ös tétel alapján):**")
+        st.latex(rf"E(\tilde{{\xi}}) = E\left(\frac{{\xi - {eredeti_e}}}{{{eredeti_d}}}\right) = \frac{{1}}{{{eredeti_d}}} \cdot (E(\xi) - {eredeti_e}) = \frac{{1}}{{{eredeti_d}}} \cdot ({eredeti_e} - {eredeti_e}) = \mathbf{{0}}")
+        
+        st.write(r"**2. Lépés: A standardizált szórásának levezetése (5.18-as tétel alapján):**")
+        st.latex(rf"D(\tilde{{\xi}}) = D\left(\frac{{\xi - {eredeti_e}}}{{{eredeti_d}}}\right) = \left|\frac{{1}}{{{eredeti_d}}}\right| \cdot D(\xi) = \frac{{1}}{{{eredeti_d}}} \cdot {eredeti_d} = \mathbf{{1}}")
+        
+        st.success(r"✅ Látod? Teljesen mindegy, milyen számokat írtál be, a végeredmény matematikailag **mindig 0 és 1** lesz!")
+    with st.expander(r"5.22 Tétel (Várható érték, kovariancia, korreláció)"):
+        # ==========================================
+        # 5.22 TÉTEL: KORRELÁCIÓ = STANDARDIZÁLT KOVARIANCIA
+        # ==========================================
+        st.write(r"**5.22 Tétel (Várható érték, kovariancia, korreláció)**")
+        st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változóknak létezik standardizáltja ($\tilde{\xi}$ és $\tilde{\eta}$).")
+        st.write(r"Ha $E(\tilde{\xi}\tilde{\eta})$, $\text{corr}(\xi, \eta)$, és $\text{cov}(\tilde{\xi}, \tilde{\eta})$ közül egy létezik, akkor a másik kettő is, és ekkor:")
+        
+        st.latex(r"E(\tilde{\xi}\tilde{\eta}) = \text{corr}(\xi, \eta) = \text{cov}(\tilde{\xi}, \tilde{\eta})")
+
+        st.info(r"💡 **Konyhanyelven:** Ez a tétel nagyon elegáns! Azt mondja ki, hogy a **korreláció nem más, mint a standardizált változók kovarianciája**. Mivel a standardizálással 'letöröltük' az eredeti mértékegységeket és léptékeket (pl. millió forintok vs. centiméterek), a korreláció egy tiszta, 'skálázatlan' viszonyszám lesz, ami pusztán csak az együttmozgás erejét méri!")
+
+    with st.expander(r"5.23 Tétel (A korreláció korlátja)"):
+        # ==========================================
+        # 5.23 TÉTEL: A KORRELÁCIÓ KORLÁTJA
+        # ==========================================
+        st.write(r"**5.23 Tétel (A korreláció korlátja)**")
+        st.write(r"Ha az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változók egyszerre diszkrétek vagy abszolút folytonosak, továbbá létezik korrelációs együtthatójuk, akkor:")
+        
+        st.latex(r"|\text{corr}(\xi, \eta)| \le 1")
+        
+        st.write(r"**Következmény (A piros dobozból):**")
+        st.latex(r"|\text{cov}(\xi, \eta)| \le D(\xi)D(\eta)")
+
+        st.markdown(r"**Magyarázat:**")
+        st.write(r"Ez a statisztika alaptörvénye. A korreláció sosem lépheti túl az $1$-et (vagy a $-1$-et). Az $1$ jelentése: a két változó tökéletes pozitív egyenes vonalú (lineáris) kapcsolatban van (pl. ha X nő eggyel, Y mindig nő kettővel). A $-1$ a tökéletes ellentétes kapcsolat. A következmény pedig megadja a kovariancia 'plafonját': sosem lehet nagyobb, mint a két szórás szorzata.")
+
+        st.markdown(r"---")
+        st.markdown(r"##### 📏 Szimuláció 5.23: A Kovariancia Plafonja")
+        st.write(r"A tétel következménye (ami a híres Cauchy–Schwarz-egyenlőtlenségből jön) szerint a kovariancia nem vehet fel akármilyen hatalmas értéket. A maximális értékét a két változó szórása korlátozza. Állítsd be a szórásokat, és nézzük meg a határokat!")
+        
+        col_dx, col_dy = st.columns(2)
+        with col_dx:
+            dx_val = st.number_input(r"$D(\xi)$ (Első változó szórása):", min_value=0.1, value=5.0, step=1.0)
+        with col_dy:
+            dy_val = st.number_input(r"$D(\eta)$ (Második változó szórása):", min_value=0.1, value=8.0, step=1.0)
+            
+        max_cov = dx_val * dy_val
+        
+        st.info(rf"**A Tétel következménye alapján a kovariancia elméleti határai:**")
+        st.latex(rf"-{max_cov:.2f} \le \text{{cov}}(\xi, \eta) \le {max_cov:.2f}")
+        
+        st.write(r"Most állítsd be a köztük lévő tényleges korrelációt ($-1$ és $1$ között), és nézzük meg a valós kovarianciát!")
+        corr_val = st.slider("Aktuális korreláció (corr):", -1.0, 1.0, 0.5, 0.1)
+        aktualis_cov = corr_val * dx_val * dy_val
+        
+        st.success(rf"**Számított aktuális kovariancia:** $\text{{cov}} = {aktualis_cov:.2f}$")
+        
+        if abs(corr_val) == 1.0:
+            st.warning(r"⚠️ Elértük a korlátot! A két változó szigorú, tökéletes determinisztikus (lineáris) kapcsolatban van.")
+    with st.expander(r"5.24 Tétel (Függőség és korreláció)"):
+        # ==========================================
+        # 5.24 TÉTEL: FÜGGŐSÉG -> KORRELÁCIÓ
+        # ==========================================
+        st.write(r"**5.24 Tétel (Függőség $\implies$ korreláció)**")
+        st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ valószínűségi változónak létezik szórása és $D(\xi) \neq 0$, továbbá bevezetünk egy új változót, ami $\xi$ lineáris függvénye: $\eta := a\xi + b$ (valamely $0 \neq a$ és $b$ valós számokra).")
+        st.write(r"Ekkor létezik $\xi$ és $\eta$ korrelációs együtthatója, és:")
+        st.latex(r"\text{corr}(\xi, \eta) = \begin{cases} 1, & \text{ha } a > 0, \\ -1, & \text{ha } a < 0. \end{cases}")
+
+        st.markdown(r"---")
+        st.markdown(r"##### 📈 Szimuláció 5.24: A determinisztikus egyenes")
+        st.write(r"Lássuk, mi történik, ha egy változót egy matematikai szabállyal ($\eta = a\xi + b$) egy másikhoz láncolunk! Próbáld meg változtatni az $a$ (meredekség) és $b$ (eltolás) paramétereket!")
+
+        col_a, col_b = st.columns(2)
+        with col_a:
+            a_val = st.slider("Meredekség (a):", -5.0, 5.0, 2.0, 0.5)
+        with col_b:
+            b_val = st.slider("Eltolás (b):", -10.0, 10.0, 0.0, 1.0)
+
+        import numpy as np
+        import pandas as pd
+
+        if a_val == 0:
+            st.warning(r"⚠️ Ha az $a = 0$, akkor $\eta$ egy fix konstans lesz. Konstansnak a szórása 0, így a korreláció képletében 0-val osztanánk, vagyis a korreláció nem értelmezett! (Ezért köti ki a tétel, hogy $a \neq 0$).")
+        else:
+            # Generálunk 50 pontot
+            x_pontok = np.linspace(-10, 10, 50)
+            y_pontok = a_val * x_pontok + b_val
+
+            df_lin = pd.DataFrame({
+                "ξ (X tengely)": x_pontok,
+                "η (Y tengely)": y_pontok
+            })
+
+            st.scatter_chart(df_lin, x="ξ (X tengely)", y="η (Y tengely)")
+
+            if a_val > 0:
+                st.success(rf"**Eredmény (5.24 tétel alapján):** Mivel az $a = {a_val} > 0$, a grafikon szigorúan emelkedik. Bármit is írsz a 'b' helyére, a pontok egy egyenesre esnek, így a korreláció elméletileg pontosan $\mathbf{{\text{{corr}} = 1}}$.")
+            elif a_val < 0:
+                st.error(rf"**Eredmény (5.24 tétel alapján):** Mivel az $a = {a_val} < 0$, a grafikon szigorúan süllyed. Bármit is írsz a 'b' helyére, a pontok egy egyenesre esnek, így a korreláció elméletileg pontosan $\mathbf{{\text{{corr}} = -1}}$.")
+
+    with st.expander(r"5.25 Tétel (Korreláció és függőség)"):
+        # ==========================================
+        # 5.25 TÉTEL: KORRELÁCIÓ -> FÜGGŐSÉG
+        # ==========================================
+        st.write(r"**5.25 Tétel (Korreláció $\implies$ függőség)**")
+        st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változóknak létezik korrelációs együtthatója, és $|\text{corr}(\xi, \eta)| = 1$.")
+        st.write(r"Ekkor léteznek olyan $0 \neq a$ és $b$ valós számok, amelyekre:")
+        st.latex(r"P(\eta = a\xi + b) = 1")
+
+        st.error(r"💡 **Következmény (A Piros doboz):** $\xi$ és $\eta$ pontosan akkor alkotnak $1$ valószínűséggel (biztosan) egy lineáris függvényt egymással, ha $|\text{corr}(\xi, \eta)| = 1$. Ezért a korrelációs együttható a **lineáris FÜGGŐSÉG 'mérőszáma'**.")
 
 with tab2:
     st.header("🧠 Fogalmak definíciói")
@@ -1066,3 +1288,64 @@ with tab2:
     
     st.scatter_chart(df_lovesek)
     st.caption(r"A grafikonon (y tengely a találat helye) jól láthatod: a Profi lövész találatai sűrűn a 0 vonal körül csoportosulnak. A Kezdő lövész is átlagosan a 0 köré lő, de a találatai sokkal jobban 'szóródnak' a nagyobb $D$ miatt!")
+
+    # ==========================================
+    # 14. KOVARIANCIA
+    # ==========================================
+    st.markdown(r"### 14. Kovariancia (Covariance)")
+    
+    st.write(r"Az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ és $\eta$ valószínűségi változók **kovarianciája** a következőképpen definiálható (feltéve, hogy a képletben szereplő várható értékek léteznek):")
+    
+    st.latex(r"\text{cov}(\xi, \eta) := E\left( (\xi - E(\xi))(\eta - E(\eta)) \right)")
+    
+    st.error(r"💡 **Kritikus észrevétel (Piros doboz):** Egy változó önmagával vett kovarianciája pontosan megegyezik a saját szórásnégyzetével! Vagyis: $\text{cov}(\xi, \xi) = D^2(\xi)$.")
+    
+    st.info(r"💡 **Konyhanyelven:** A kovariancia azt méri, hogyan mozog együtt két dolog. Például $\xi$ legyen a 'Tanulással töltött órák száma', $\eta$ pedig a 'Vizsgán elért pontszám'. Ha a diákok többsége mindkettőben az átlag felett teljesít (sokat tanul = sok pont), akkor a két zárójel szorzata pozitív lesz, így a kovariancia **pozitív**. Ha ellentétesen mozognak (pl. 'Bulizással töltött órák' és 'Vizsgapontszám'), akkor a kovariancia **negatív**. Ha nincs közük egymáshoz, a kovariancia $0$ körül lesz.")
+
+    st.markdown(r"---")
+    st.markdown(r"##### 📈 Szimuláció 14: Együttmozgás a gyakorlatban")
+    st.write(r"Állítsd be, hogy milyen kapcsolat legyen két változó között (pl. Magasság és Súly), és nézzük meg, hogyan változik a kovariancia és a pontfelhő alakja!")
+    
+    kapcsolat = st.slider("Változók közötti kapcsolat iránya és ereje:", -1.0, 1.0, 0.8, 0.1)
+    
+    import numpy as np
+    import pandas as pd
+    
+    # 100 darab véletlenszerű adatpont generálása a megadott kapcsolat (korreláció) alapján
+    np.random.seed(42) # Hogy mindig ugyanúgy nézzen ki betöltéskor
+    x_val = np.random.normal(170, 10, 100) # Pl. Magasság (Átlag 170, Szórás 10)
+    noise = np.random.normal(0, 10, 100)
+    y_val = (kapcsolat * x_val) + (np.sqrt(1 - kapcsolat**2) * noise) + (70 - kapcsolat*170) # Pl. Súly trükkös generálása
+    
+    df_cov = pd.DataFrame({
+        "Magasság (ξ)": x_val,
+        "Súly (η)": y_val
+    })
+    
+    # Kovariancia kiszámítása numpy-val (a mátrix [0,1] eleme a két változó kovarianciája)
+    szamitott_cov = np.cov(x_val, y_val)[0, 1]
+    
+    col_c1, col_c2 = st.columns([1, 2])
+    with col_c1:
+        st.write("**Számított Kovariancia:**")
+        if szamitott_cov > 5:
+            st.success(rf"$\text{{cov}} = \mathbf{{{szamitott_cov:.1f}}}$ (Pozitív, együtt mozognak!)")
+        elif szamitott_cov < -5:
+            st.error(rf"$\text{{cov}} = \mathbf{{{szamitott_cov:.1f}}}$ (Negatív, ellentétesen mozognak!)")
+        else:
+            st.warning(rf"$\text{{cov}} = \mathbf{{{szamitott_cov:.1f}}}$ (Nulla közeli, függetlennek tűnnek.)")
+            
+    with col_c2:
+        st.scatter_chart(df_cov, x="Magasság (ξ)", y="Súly (η)")
+
+    # ==========================================
+    # 15. STANDARDIZÁLT VALÓSZÍNŰSÉGI VÁLTOZÓ
+    # ==========================================
+    st.markdown(r"### 15. Standardizált valószínűségi változó")
+    
+    st.write(r"Tegyük fel, hogy az $(\Omega, \mathcal{F}, P)$-n értelmezett $\xi$ valószínűségi változónak létezik szórása és az nem nulla ($D(\xi) \neq 0$).")
+    st.write(r"Ekkor $\xi$ **standardizáltja** (Standardized Random Variable) a következő valószínűségi változó:")
+    
+    st.latex(r"\tilde{\xi} = \frac{\xi - E(\xi)}{D(\xi)}")
+    
+    st.info(r"💡 **Konyhanyelven:** Ezt az eljárást arra használjuk, hogy különböző 'skálájú' dolgokat össze tudjunk hasonlítani. Ha egy diák 80 pontot kapott a matek ZH-n (ahol az átlag 60, a szórás 10), akkor a standardizált értéke: $\frac{80 - 60}{10} = +2$. Ez azt jelenti, hogy ő **2 szórással az átlag felett** teljesített. Ha történelemből 60 pontot kapott, de ott az átlag 40 volt, a szórás pedig 10, akkor a standardizált értéke ott is $\frac{60 - 40}{10} = +2$. Vagyis a látszólag különböző pontszámok ellenére a két tárgyból pontosan ugyanolyan jól (a csoportjához képest egyaránt 2 szórással jobban) teljesített!")
