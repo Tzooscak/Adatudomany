@@ -6,7 +6,7 @@ st.markdown("---")
 tab1, tab2 = st.tabs(["📚 Tételek", "🧠 Fogalmak"])
 
 with tab1:
-    st.info("Ez a fejezet tartalmazza a legtöbb tételt. Oszd be jól az idődet a tanulásnál! (Az elrendezés most kényelmesen egymás alatti.)")
+    st.info("Ez a fejezet tartalmazza a legtöbb tételt. Oszd be jól az idődet a tanulásnál!")
     
     with st.expander("5.1 Valószínűségi változók és események (TÉTEL)"):
         # ==========================================
