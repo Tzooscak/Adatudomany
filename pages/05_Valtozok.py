@@ -991,16 +991,70 @@ with tab2:
     st.progress(cdf_val)
 
     # ==========================================
-    # 4. ABSZOLÚT FOLYTONOS VÁLTOZÓ ÉS PDF
+    # 4. ABSZOLÚT FOLYTONOS VÁLTOZÓ, PDF ÉS CDF
     # ==========================================
-    st.markdown(r"### 4. Abszolút folytonos valószínűségi változó és Sűrűségfüggvény")
-    st.write(r"A $\xi$ **abszolút folytonos valószínűségi változó**, ha létezik olyan $f_\xi : \mathbb{R} \rightarrow \mathbb{R}$ nemnegatív függvény, amelyre az eloszlásfüggvény előállítható integrálként:")
+    st.markdown("### 4. Eloszlás, Sűrűségfüggvény (PDF) és Eloszlásfüggvény (CDF)")
+    
+    st.write("A legkönnyebben úgy értheted meg a különbséget, ha elképzelsz **1 kg tésztát** (ez jelképezi a 100%-os biztos eseményt), amit szét akarunk kenni egy asztalon (a számegyenesen).")
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info("📦 **1. Eloszlás (Distribution)**\n\nMaga a koncepció és a szabály, ahogy a tészta kinéz az asztalon (pl. középen van egy nagy púp, a széleken meg lapos).")
+    with col2:
+        st.warning("🌊 **2. Sűrűségfüggvény $f(x)$**\n\nA tészta **vastagsága** (magassága) az asztal egy adott pontján. Önmagában egyetlen pont vastagsága még nem ad valószínűséget!")
+    with col3:
+        st.success("📈 **3. Eloszlásfüggvény $F(x)$**\n\nA valószínűség! Azt mutatja, mennyi tésztát toltál már össze balról egészen az $x$ pontig.")
+        
+    st.write("A hivatalos matematikai definíció szerint a $\\xi$ **abszolút folytonos**, ha létezik egy $f_\\xi$ sűrűségfüggvény, amivel a kumulatív eloszlásfüggvény (a balról összetolt tészta) egy integrállal (a terület kiszámításával) felírható:")
     st.latex(r"F_\xi(x) = \int_{-\infty}^{x} f_\xi(t) dt \quad \text{teljesül } \forall x \in \mathbb{R} \text{ esetén.}")
-    st.write(r"Ekkor ezt az $f_\xi$ függvényt a $\xi$ **sűrűségfüggvényének** (Probability Density Function, PDF) nevezzük.")
 
-    st.info(r"💡 **Trükkös észrevétel a vizsgára:** Egy $\xi$ abszolút folytonos valószínűségi változónak *végtelen sok* sűrűségfüggvénye van! Miért? Mert ha egy függvény értékét egyetlen pontban megváltoztatjuk, a görbe alatti terület (az integrál) nem változik meg. Ezt úgy mondják a matematikusok, hogy ezek a függvények 'majdnem mindenütt megegyeznek'.")
+    st.error("💡 **Trükkös észrevétel a vizsgára:** Mivel a tészta vastagsága egyetlen hajszálvékony pontban nem ad ki mérhető területet, ezért egyetlen konkrét pont valószínűsége a folytonos változóknál mindig $0$. Vagyis $P(\\xi = x) = 0$.")
 
-    st.markdown(r"---")
+    st.markdown("---")
+    
+    # --- INTERAKTÍV VIZUALIZÁCIÓ ---
+    st.markdown("##### 🕹️ Interaktív Szimuláció: A Valószínűség-tészta összetolása")
+    st.write("Mozgasd a csúszkát (mintha egy vonalzót tolnál balról jobbra), és nézd meg, hogyan gyűlik össze a valószínűség a sűrűségfüggvény görbéje alatti területből, és hogyan rajzolja ki a CDF-et!")
+
+    import numpy as np
+    import pandas as pd
+    import scipy.stats as stats
+    
+    # Csúszka a vonalzónak
+    x_val = st.slider("Húzd a vonalzót jobbra (x érték):", -3.0, 3.0, 0.0, 0.1)
+    
+    # Adatok generálása a grafikonokhoz (Standard Normál eloszlás, mint tökéletes példa)
+    x_axis = np.linspace(-3.5, 3.5, 100)
+    pdf_y = stats.norm.pdf(x_axis, 0, 1) # Haranggörbe
+    cdf_y = stats.norm.cdf(x_axis, 0, 1) # S-görbe
+    
+    # Aktuális CDF érték a csúszka pozíciójában
+    aktualis_cdf = stats.norm.cdf(x_val, 0, 1)
+    
+    col_pdf, col_cdf = st.columns(2)
+    
+    with col_pdf:
+        st.markdown("**Sűrűségfüggvény $f(x)$ (PDF)**")
+        st.caption("A kitöltött terület mutatja a balról eddig összetolt 'tésztát' (az integrált).")
+        
+        # Grafikon rajzolása: Létrehozunk egy adathalmazt a terület kitöltéséhez
+        df_pdf = pd.DataFrame({"x": x_axis, "Teljes görbe": pdf_y})
+        # Csak addig a pontig töltjük ki, ahol a csúszka áll
+        df_pdf["Összegyűjtött terület"] = np.where(df_pdf["x"] <= x_val, df_pdf["Teljes görbe"], 0)
+        
+        st.area_chart(df_pdf.set_index("x")[["Összegyűjtött terület", "Teljes görbe"]], color=["#11caa0", "#005088"])
+        
+    with col_cdf:
+        st.markdown("**Eloszlásfüggvény $F(x)$ (CDF)**")
+        st.caption("Ez a görbe mutatja a terület halmozódását, egészen 1-ig (100%).")
+        
+        df_cdf = pd.DataFrame({"x": x_axis, "Halmozott valószínűség": cdf_y})
+        # Csak vizuális extra: egy pont a görbén, ahol épp járunk
+        df_cdf["Aktuális pont"] = np.where(np.abs(df_cdf["x"] - x_val) < 0.1, df_cdf["Halmozott valószínűség"], None)
+        
+        st.line_chart(df_cdf.set_index("x")[["Halmozott valószínűség", "Aktuális pont"]], color=["#ff2b2b", "#000000"])
+        
+    st.success(f"**Eredmény az adott pontban ($x = {x_val:.1f}$):** A vonalzóig a teljes tészta (valószínűség) **{aktualis_cdf * 100:.1f}%**-át gyűjtöttük össze. Matematikailag: $F({x_val:.1f}) = {aktualis_cdf:.3f}$.")
 
     # ==========================================
     # 5. EGYENLETES ELOSZLÁS
