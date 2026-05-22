@@ -1,4 +1,8 @@
 import streamlit as st
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from scipy.stats import norm
 
 st.title("📊 5. Valószínűségi változó")
 st.markdown("---")
@@ -993,14 +997,82 @@ with tab2:
     # ==========================================
     # 4. ABSZOLÚT FOLYTONOS VÁLTOZÓ ÉS PDF
     # ==========================================
-    st.markdown(r"### 4. Abszolút folytonos valószínűségi változó és Sűrűségfüggvény")
-    st.write(r"A $\xi$ **abszolút folytonos valószínűségi változó**, ha létezik olyan $f_\xi : \mathbb{R} \rightarrow \mathbb{R}$ nemnegatív függvény, amelyre az eloszlásfüggvény előállítható integrálként:")
+    st.markdown(r"### 4. Sűrűségfüggvény (PDF) – De mi köze a sűrűségnek a valószínűséghez?")
+
+    # --- 1. RÉSZ: FIZIKAI ANALÓGIA ---
+    col1, col2 = st.columns(2)
+    with col1:
+        st.info(r"**Fizikai analógia** 🍎" "\n\n"
+                r"A fizikában a sűrűség a tömeg és a térfogat hányadosa: $\rho = \frac{m}{V}$" "\n\n"
+                r"Ha a sűrűség nem homogén (változik a test belsejében), egy adott pont sűrűségét úgy kapjuk meg, ha a térfogatot nullához tartatjuk:" "\n\n"
+                r"$\rho_{pont} = \lim_{V \to 0} \frac{m}{V}$")
+    with col2:
+        st.success(r"**Valószínűségi megfelelő** 🎲" "\n\n"
+                r"Itt a 'tömeg' a **valószínűség**, a 'térfogat' pedig az **intervallum hossza**." "\n\n"
+                r"Egy adott pontbeli sűrűség (PDF) ugyanígy, az intervallum nullához tartásával kapható meg:" "\n\n"
+                r"$f(x) = \lim_{\epsilon \to 0} \frac{P}{\epsilon}$")
+
+    # --- 2. RÉSZ: MATEMATIKAI LEVEZETÉS ---
+    st.markdown("#### A sűrűségfüggvény levezetése analízisbeli eszközökkel")
+    st.write(r"Vegyünk egy $\xi$ nemkonstans folytonos valószínűségi változót. A kérdés: mekkora valószínűséggel lesz az értéke egy tetszőlegesen pici, $\epsilon$ széles intervallumban?")
+    st.latex(r"P(x \le \xi < x + \epsilon) = F_\xi(x + \epsilon) - F_\xi(x), \quad (x \in \mathbb{R} \text{ és } \epsilon > 0)")
+
+    st.write(r"Osszuk el ezt a valószínűséget az intervallum hosszával ($\epsilon$), hogy megkapjuk a szakaszon vett átlagos sűrűséget:")
+    st.latex(r"\frac{F_\xi(x + \epsilon) - F_\xi(x)}{\epsilon}")
+
+    st.write("Ha az intervallum hosszát nullához tartatjuk, a differenciálszámítás definíciója alapján megkapjuk az eloszlásfüggvény deriváltját. **Ez maga a sűrűségfüggvény!**")
+    st.latex(r"\lim_{\epsilon \to 0} \frac{F_\xi(x + \epsilon) - F_\xi(x)}{\epsilon} = F_\xi'(x)")
+
+
+    # --- 3. RÉSZ: INTERAKTÍV VIZUALIZÁCIÓ ---
+    st.markdown("---")
+    st.markdown("#### 📊 Interaktív Vizualizáció: Terület és Valószínűség")
+    st.write(r"Állítsd be az intervallumot, és figyeld meg, hogyan adja meg a **sűrűségfüggvény (PDF) alatti terület** pontosan ugyanazt a valószínűséget, mint az **eloszlásfüggvény (CDF) magasságkülönbsége**!")
+
+    # Interaktív csúszka
+    x_min, x_max = st.slider(r"Válaszd ki az intervallumot (ez felel meg az $x$ és $x+\epsilon$ határoknak):", -4.0, 4.0, (-1.0, 1.0), 0.1)
+
+    # Adatok generálása a Plotly ábrához (Standard normál eloszlás példaként)
+    x_vals = np.linspace(-4, 4, 500)
+    y_pdf = norm.pdf(x_vals)
+    y_cdf = norm.cdf(x_vals)
+
+    # Ábra létrehozása két panellel
+    fig = make_subplots(rows=1, cols=2, subplot_titles=("Sűrűségfüggvény (PDF)", "Eloszlásfüggvény (CDF)"))
+
+    # 1. Panel: PDF görbe és terület
+    fig.add_trace(go.Scatter(x=x_vals, y=y_pdf, mode='lines', name='PDF', line=dict(color='royalblue')), row=1, col=1)
+    x_fill = np.linspace(x_min, x_max, 100)
+    y_fill = norm.pdf(x_fill)
+    fig.add_trace(go.Scatter(x=np.concatenate([x_fill, x_fill[::-1]]),
+                            y=np.concatenate([y_fill, np.zeros_like(y_fill)]),
+                            fill='toself', fillcolor='rgba(65, 105, 225, 0.4)',
+                            line=dict(color='rgba(255,255,255,0)'),
+                            name=f'P({x_min} ≤ ξ < {x_max})', hoverinfo='none'), row=1, col=1)
+
+    # 2. Panel: CDF görbe és magasságkülönbség
+    fig.add_trace(go.Scatter(x=x_vals, y=y_cdf, mode='lines', name='CDF', line=dict(color='seagreen')), row=1, col=2)
+    # Pontok kiemelése a CDF-en
+    cdf_min, cdf_max = norm.cdf(x_min), norm.cdf(x_max)
+    fig.add_trace(go.Scatter(x=[x_min, x_max], y=[cdf_min, cdf_max],
+                            mode='markers+lines', marker=dict(size=10, color='firebrick'),
+                            line=dict(color='firebrick', dash='dash'),
+                            name='F(x+ε) - F(x) különbség'), row=1, col=2)
+
+    fig.update_layout(height=450, showlegend=False, margin=dict(l=20, r=20, t=40, b=20))
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.caption(f"**Érdekesség a grafikonról:** A bal oldali kék terület mérete pontosan megegyezik a jobb oldali piros szaggatott vonal függőleges hosszával (ami {cdf_max - cdf_min:.4f}).")
+
+
+    # --- 4. RÉSZ: FORMÁLIS DEFINÍCIÓ ÉS INTEGRÁL ALAK ---
+    st.markdown("---")
+    st.markdown(r"#### A formális definíció (Integrál alak)")
+    st.write(r"A fentiekből (az integrálszámítás alaptétele miatt) egyenesen következik a formális definíció. A $\xi$ **abszolút folytonos valószínűségi változó**, ha létezik olyan $f_\xi : \mathbb{R} \rightarrow \mathbb{R}$ nemnegatív függvény, amelyre az eloszlásfüggvény előállítható integrálként:")
     st.latex(r"F_\xi(x) = \int_{-\infty}^{x} f_\xi(t) dt \quad \text{teljesül } \forall x \in \mathbb{R} \text{ esetén.}")
-    st.write(r"Ekkor ezt az $f_\xi$ függvényt a $\xi$ **sűrűségfüggvényének** (Probability Density Function, PDF) nevezzük.")
+    st.write(r"Ezt az $f_\xi$ függvényt nevezzük a $\xi$ **sűrűségfüggvényének** (Probability Density Function, PDF).")
 
-    st.info(r"💡 **Trükkös észrevétel a vizsgára:** Egy $\xi$ abszolút folytonos valószínűségi változónak *végtelen sok* sűrűségfüggvénye van! Miért? Mert ha egy függvény értékét egyetlen pontban megváltoztatjuk, a görbe alatti terület (az integrál) nem változik meg. Ezt úgy mondják a matematikusok, hogy ezek a függvények 'majdnem mindenütt megegyeznek'.")
-
-    st.markdown(r"---")
+    st.warning(r"💡 **Trükkös észrevétel a vizsgára:** Egy $\xi$ abszolút folytonos valószínűségi változónak *végtelen sok* sűrűségfüggvénye van! Miért? Mert ha egy függvény értékét egyetlen pontban megváltoztatjuk, a görbe alatti terület (az integrál) nem változik meg. Ezt úgy mondják a matematikusok, hogy ezek a függvények 'majdnem mindenütt megegyeznek'.")
 
     # ==========================================
     # 5. EGYENLETES ELOSZLÁS
