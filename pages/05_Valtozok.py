@@ -1,4 +1,5 @@
 import streamlit as st
+import math
 
 st.title("📊 5. Valószínűségi változó")
 st.markdown("---")
@@ -990,17 +991,90 @@ with tab2:
     st.write("**A 'halmozott' (kumulatív) valószínűség:**")
     st.progress(cdf_val)
 
+    # --- Tiszta Python segédfüggvények (SciPy helyett) ---
+    def standard_normal_pdf(x):
+        """Standard normális eloszlás sűrűségfüggvénye (haranggörbe magassága)."""
+        return (1.0 / math.sqrt(2 * math.pi)) * math.exp(-0.5 * x**2)
+
+    def standard_normal_cdf(x):
+        """Standard normális eloszlás eloszlásfüggvénye (terület a görbe alatt)."""
+        return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+
     # ==========================================
     # 4. ABSZOLÚT FOLYTONOS VÁLTOZÓ ÉS PDF
     # ==========================================
-    st.markdown(r"### 4. Abszolút folytonos valószínűségi változó és Sűrűségfüggvény")
+    st.markdown("### 4. Abszolút folytonos valószínűségi változó és Sűrűségfüggvény")
+
+    # 1. Fizikai analógia bevezetése
+    st.markdown("#### 🤔 Mi köze a sűrűségnek a valószínűséghez?")
+    st.write("Kezdjük egy kis fizikával! Egy homogén test sűrűsége a tömeg és a térfogat hányadosa:")
+    st.latex(r"\rho = \frac{m}{V}")
+    st.write("De mi van, ha a test nem homogén (például a közepe sűrűbb)? Ekkor egy adott pont sűrűségét úgy kapjuk meg, hogy egy egyre zsugorodó térfogatot vizsgálunk az adott pont körül:")
+    st.latex(r"\rho_{pont} = \lim_{V \to 0} \frac{m}{V}")
+
+    # 2. A valószínűségi levezetés
+    st.markdown("#### 📐 Hogyan fordítsuk ezt le a matematika nyelvére?")
+    st.write(r"Vegyünk egy $\xi$ nemkonstans valószínűségi változót. A kérdés az: mekkora valószínűséggel esik $\xi$ értéke egy tetszőlegesen kicsi, $\epsilon$ hosszúságú intervallumba egy $x$ pont körül?")
+    st.latex(r"P(x \le \xi < x + \epsilon) = F_\xi(x + \epsilon) - F_\xi(x)")
+    st.write(r"Ezt elosztva az intervallum hosszával ($\epsilon$), megkapjuk az *átlagos valószínűségi sűrűséget*. Ha az intervallum hosszát nullához tartatjuk, megkapjuk a deriváltat:")
+    st.latex(r"\lim_{\epsilon \to 0} \frac{F_\xi(x + \epsilon) - F_\xi(x)}{\epsilon} = F'_\xi(x)")
+    st.success(r"Ez a derivált, vagyis az eloszlásfüggvény meredeksége lesz a mi **sűrűségfüggvényünk**!")
+
+    # 3. A formális definíció 
+    st.markdown("#### 📖 A formális definíció")
     st.write(r"A $\xi$ **abszolút folytonos valószínűségi változó**, ha létezik olyan $f_\xi : \mathbb{R} \rightarrow \mathbb{R}$ nemnegatív függvény, amelyre az eloszlásfüggvény előállítható integrálként:")
     st.latex(r"F_\xi(x) = \int_{-\infty}^{x} f_\xi(t) dt \quad \text{teljesül } \forall x \in \mathbb{R} \text{ esetén.}")
     st.write(r"Ekkor ezt az $f_\xi$ függvényt a $\xi$ **sűrűségfüggvényének** (Probability Density Function, PDF) nevezzük.")
 
-    st.info(r"💡 **Trükkös észrevétel a vizsgára:** Egy $\xi$ abszolút folytonos valószínűségi változónak *végtelen sok* sűrűségfüggvénye van! Miért? Mert ha egy függvény értékét egyetlen pontban megváltoztatjuk, a görbe alatti terület (az integrál) nem változik meg. Ezt úgy mondják a matematikusok, hogy ezek a függvények 'majdnem mindenütt megegyeznek'.")
+    st.info(r"💡 **Trükkös észrevétel a vizsgára:** Egy $\xi$ abszolút folytonos valószínűségi változónak *végtelen sok* sűrűségfüggvénye van! Miért? Mert ha egy függvény értékét egyetlen (vagy véges sok) pontban megváltoztatjuk, a görbe alatti terület (az integrál) nem változik meg.")
 
-    st.markdown(r"---")
+    # 4. Interaktív Szimuláció (Natív Streamlit elemekkel)
+    st.markdown("---")
+    st.markdown("#### 🎮 Interaktív Szimuláció: A határérték varázslata")
+    st.write(r"Próbáld ki te magad! Állíts be egy $x$ pontot és egy $\epsilon$ intervallumhosszt. Figyeld meg a lenti dobozokban, mi történik, ha az $\epsilon$ értékét elkezded a nullához közelíteni!")
+
+    # Csúszkák a bemenethez
+    col1, col2 = st.columns(2)
+    with col1:
+        x_val = st.slider("Válassz egy 'x' pontot:", -3.0, 3.0, 0.0, 0.1)
+    with col2:
+        epsilon = st.slider(r"Válassz egy 'ε' intervallum hosszt:", 0.001, 2.000, 1.000, 0.050)
+
+    # Matematikai számítások
+    pontos_valoszinuseg = standard_normal_cdf(x_val + epsilon) - standard_normal_cdf(x_val)
+    suruseg_az_x_pontban = standard_normal_pdf(x_val)
+    kozelites = suruseg_az_x_pontban * epsilon
+    hiba = kozelites - pontos_valoszinuseg
+
+    # Eredmények látványos megjelenítése Streamlit Metric kártyákkal
+    st.markdown("##### Eredmények összehasonlítása")
+    m_col1, m_col2, m_col3 = st.columns(3)
+
+    with m_col1:
+        st.metric(
+            label=r"Pontos Valószínűség (Integrál)", 
+            value=f"{pontos_valoszinuseg:.5f}",
+            help="A valós terület a görbe alatt x és x+ε között."
+        )
+
+    with m_col2:
+        st.metric(
+            label=r"Közelítés (Sűrűség × ε)", 
+            value=f"{kozelites:.5f}",
+            help="A téglalap területe, ha a sűrűséget állandónak vesszük az intervallumon."
+        )
+
+    with m_col3:
+        st.metric(
+            label="Eltérés (Hiba)", 
+            value=f"{abs(hiba):.5f}",
+            delta=f"{abs(hiba):.5f} pontatlanság",
+            delta_color="inverse",
+            help="Minél kisebb ez a szám, annál jobb a közelítés."
+        )
+
+    st.caption(r"👉 **Feladat:** Húzd az $\epsilon$ csúszkát egészen balra (a legkisebb érték felé). Láthatod, hogy az *Eltérés* nullához tart. Pontosan ez a fizikai és matematikai alapja a sűrűségfüggvénynek!")
+    st.markdown("---")
 
     # ==========================================
     # 5. EGYENLETES ELOSZLÁS
