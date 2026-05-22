@@ -5,7 +5,7 @@ import pandas as pd
 st.title("📈 6. Nevezetes Eloszlások")
 st.markdown("---")
 
-tab1, tab2 = st.tabs(["📚 Tételek", "🧠 Fogalmak"])
+tab1, tab2 = st.tabs(["📚 Tételek & Bizonyítások", "🧠 Fogalmak & Szimulációk"])
 
 with tab1:
     # ==========================================================================
@@ -128,35 +128,3 @@ with tab2:
     st.markdown("### További kulcsfogalmak ebben a fejezetben")
     st.write("- **Binomiális eloszlás:** Amikor nem egy, hanem $n$ darab teljesen független Bernoulli-kísérletet végzünk el egymás után, és számoljuk a sikerek számát (Kidolgozandó...).")
     st.write("- **Poisson-eloszlás:** Ritka események száma adott időintervallum vagy térfogat alatt, a binomiális eloszlás határeloszlása (Kidolgozandó...).")
-    # ==========================================
-    # 2. BERNOULLI-ELOSZLÁS
-    # ==========================================
-    st.markdown("### 2. Bernoulli-eloszlás")
-    st.write(r"Legyen $(\Omega, \mathcal{F}, P)$ valószínűségi mező és $I_A$ az $A \in \mathcal{F}$ esemény indikátorváltozója.")
-    st.write(r"Ekkor $I_A$ eloszlása **$P(A)$ paraméterű Bernoulli-eloszlás**.")
-    
-    st.info(r"💡 **Konyhanyelven:** A Bernoulli-eloszlás a létező legegyszerűbb eloszlás. Egyetlen kísérletet ír le, aminek pontosan két kimenetele lehet: Siker (1) vagy Kudarc (0). A paramétere, amit általában $p$-vel jelölünk, egyszerűen a Siker valószínűsége.")
-
-    st.markdown("---")
-    st.markdown("##### 🎛️ Szimuláció: A Bernoulli-eloszlás tulajdonságai")
-    st.write(r"Állítsd be a 'Siker' valószínűségét ($p = P(A)$), és figyeld meg, hogyan alakul a várható érték és a szórásnégyzet a 6.1-es Tétel alapján!")
-    
-    p_val = st.slider("Siker valószínűsége (p):", 0.0, 1.0, 0.5, 0.01)
-    
-    col_e, col_d = st.columns(2)
-    with col_e:
-        st.success(rf"**Várható érték ($E$):** {p_val:.2f}")
-    with col_d:
-        var_val = p_val * (1.0 - p_val)
-        st.warning(rf"**Variancia ($D^2$):** {var_val:.4f}")
-        
-    # Extra vizuális visszajelzés a variancia viselkedéséről
-    if p_val == 0.5:
-        st.caption("🎯 **Érdekesség:** A variancia (bizonytalanság) $p=0.5$ esetén a legnagyobb ($0.25$)! Ekkor a legnehezebb megjósolni a kimenetelt (pl. egy szabályos érmefeldobásnál).")
-    elif p_val == 0.0 or p_val == 1.0:
-        st.caption("🎯 **Érdekesség:** A variancia $0$ lett! Ha valami lehetetlen ($p=0$) vagy biztos ($p=1$), ott megszűnik a bizonytalanság.")
-
-    st.markdown("---")
-    st.markdown("### További kulcsfogalmak")
-    st.write("- Binomiális eloszlás (Kidolgozandó...)")
-    st.write("- Poisson-eloszlás (Kidolgozandó...)")
