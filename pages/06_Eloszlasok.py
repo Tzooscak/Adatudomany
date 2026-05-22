@@ -61,7 +61,7 @@ with tab1:
             st.latex(r"E(I_A) = \sum x_k \cdot P(I_A = x_k) = 1 \cdot p + 0 \cdot (1 - p) = \mathbf{p}")
             
             st.markdown("**2. A Variancia ($D^2$) levezetése:**")
-            st.write("Alkalmazzuk a korábban tanult 5.17-es számolási kiskaput: $D^2(\xi) = E(\xi^2) - E^2(\xi)$. Ehhez először ki kell számolnunk a négyzetek várható értékét ($E(I_A^2)$):")
+            st.write(r"Alkalmazzuk a korábban tanult 5.17-es számolási kiskaput: $D^2(\xi) = E(\xi^2) - E^2(\xi)$. Ehhez először ki kell számolnunk a négyzetek várható értékét ($E(I_A^2)$):")
             st.latex(r"E(I_A^2) = 1^2 \cdot p + 0^2 \cdot (1 - p) = p")
             st.write("Most helyettesítsük be ezt és a korábban kapott várható értéket a főképletbe:")
             st.latex(r"D^2(I_A) = E(I_A^2) - E^2(I_A) = p - p^2 = \mathbf{p(1 - p)}")
@@ -120,9 +120,9 @@ with tab2:
         st.write(f"A generált háttér-valószínűség: `{veletlen:.4f}`")
         
         if veletlen <= p_sim:
-            st.success(f"🎉 **SIKER!** Mivel a véletlen szám kisebb vagy egyenlő, mint {p_sim}, az esemény bekövetkezett ($\omega \in A$). Az indikátorváltozó értéke: **$I_A = 1$**")
+            st.success(rf"🎉 **SIKER!** Mivel a véletlen szám kisebb vagy egyenlő, mint {p_sim}, az esemény bekövetkezett ($\omega \in A$). Az indikátorváltozó értéke: **$I_A = 1$**")
         else:
-            st.error(f"❌ **KUDARC!** Mivel a véletlen szám nagyobb, mint {p_sim}, az esemény nem következett be ($\omega \notin A$). Az indikátorváltozó értéke: **$I_A = 0$**")
+            st.error(rf"❌ **KUDARC!** Mivel a véletlen szám nagyobb, mint {p_sim}, az esemény nem következett be ($\omega \notin A$). Az indikátorváltozó értéke: **$I_A = 0$**")
 
     st.markdown("---")
     st.markdown("### További kulcsfogalmak ebben a fejezetben")
